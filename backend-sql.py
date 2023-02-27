@@ -7,7 +7,7 @@ mydb = mysql.connector.connect(
     port='3306',
     database="olympics"
 )
-
+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
 mycursor = mydb.cursor()
 
 
