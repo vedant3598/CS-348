@@ -7,11 +7,11 @@ mydb = mysql.connector.connect(
     port='3306',
     database="olympics"
 )
-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
+
 mycursor = mydb.cursor()
 
 
-def select_medals_for_country():
+def get_medals_for_country():
     mycursor.execute("select country, COUNT(*) as medal_count from Athlete inner join Participates on Athlete.id = "
                      "Participates.athlete_id where medal_achieved is not null group by country order by medal_count "
                      "desc")
@@ -20,7 +20,7 @@ def select_medals_for_country():
     return result
 
 
-def select_medals_for_athlete(athlete_id):
+def get_medals_for_athlete(athlete_id):
     mycursor.execute("create view athlete_bronze as select COUNT(*) as count_bronze from Athlete inner join "
                      "Participates on Athlete.id = Participates.athlete_id where medal_achieved = 'bronze' and "
                      "Athlete.id = {}".format(athlete_id))
@@ -39,19 +39,19 @@ def select_medals_for_athlete(athlete_id):
     return athlete_medals_result
 
 
-def select_athletes_by_country(country):
+def get_athletes_by_country(country):
     mycursor.execute("select * from Athlete where country = {}".format(country))
     result = mycursor.fetchall()
     return result
 
 
-def select_athlete(athlete_id):
+def get_athlete(athlete_id):
     mycursor.execute("select * from Athlete where athlete_id = {}".format(athlete_id))
     result = mycursor.fetchall()
     return result
 
 
-def select_athletes_by_year_season(year, season):
+def get_athletes_by_year_season(year, season):
     mycursor.execute("select * from Games, Participates, Athlete where (year, season) = ({}, {}) group by "
                      "Athletes.country".format(year, season))
     result = mycursor.fetchall()
@@ -85,3 +85,14 @@ def find_event_max_participation():
     result = mycursor.fetchall()
     return result
 
+
+def get_max_medals_athlete():
+    mycursor.execute("create view athlete_medal_count as select *, COUNT(*) as num_medals from Athlete, Participates "
+                     "where Athlete.id = Participates.athlete_id and Participates.medal_achieved is not null group by"
+                     " Athlete.id")
+
+    mycursor.execute("select event_name, athlete_name, max(num_medals) as medal_count from athlete_medal_count group "
+                     "by athlete_medals.event_name order by most_medals desc")
+
+    result = mycursor.fetchall()
+    return result
