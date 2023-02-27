@@ -73,7 +73,7 @@ def delete_athlete_from_user(user_id, athlete_id):
 
 def insert_athlete_into_user(user_id, athlete_id):
     mycursor.execute("insert into Selects values ({}, {})".format(user_id, athlete_id))
-    # check if result is deleted
+    # check if result is inserted
     result = mycursor.fetchall()
     return result
 
@@ -94,5 +94,61 @@ def get_max_medals_athlete():
     mycursor.execute("select event_name, athlete_name, max(num_medals) as medal_count from athlete_medal_count group "
                      "by athlete_medals.event_name order by most_medals desc")
 
+    result = mycursor.fetchall()
+    return result
+
+
+def insert_user(id, first_name, surname, fav_country, email, username, password):
+    mycursor.execute("insert into User values ({}, {}, {}, {}, {}, {}, {})".format(id, first_name, surname, fav_country, email, username, password))
+    # check if result is inserted
+    result = mycursor.fetchall()
+    return result
+
+
+def insert_event(event_name, sport):
+    mycursor.execute("insert into Event values ({}, {})".format(event_name, sport))
+    # check if result is inserted
+    result = mycursor.fetchall()
+    return result
+
+
+def insert_games(year, season, city):
+    mycursor.execute("insert into Games values ({}, {}, {})".format(year, season, city))
+    # check if result is inserted
+    result = mycursor.fetchall()
+    return result
+
+
+def insert_country(name, country_code):
+    mycursor.execute("insert into Country values ({}, {})".format(name, country_code))
+    # check if result is inserted
+    result = mycursor.fetchall()
+    return result
+
+
+def insert_athlete(id, first_name, surname, age, height, weight, gold_medals, silver_medals, bronze_medals, country):
+    mycursor.execute("insert into Country values ({}, {}, {}, {}, {}, {}, {}, {}, {}, {})".format(id, first_name, surname, age, height, weight, gold_medals, silver_medals, bronze_medals, country))
+    # check if result is inserted
+    result = mycursor.fetchall()
+    return result
+
+
+def insert_selects(user_id, athlete_id):
+    mycursor.execute("insert into Selects values ({}, {})".format(user_id, athlete_id))
+    # check if result is inserted
+    result = mycursor.fetchall()
+    return result
+
+
+def insert_friends(user_id, friend_id):
+    mycursor.execute("insert into Selects values ({}, {})".format(user_id, friend_id))
+    # check if result is inserted
+    result = mycursor.fetchall()
+    return result
+
+
+def insert_participates(athlete_id, event_name, year, season, medal_achieved):
+    mycursor.execute("insert into Participates values ({}, {}, {}, {}, {})".format(athlete_id, event_name, year, season, medal_achieved))
+    # check if result is inserted
     result = mycursor.fetchall()
     return result
