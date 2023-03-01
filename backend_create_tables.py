@@ -15,12 +15,14 @@ mycursor.execute("CREATE TABLE User (id VARCHAR(255), first_name VARCHAR(255), s
                  "fav_country VARCHAR(255), email VARCHAR(255), username VARCHAR(255), password VARCHAR(255), "
                  "PRIMARY KEY (id))")
 
-mycursor.execute("CREATE TABLE Event (event_name VARCHAR(255), sport VARCHAR(255), PRIMARY KEY(event_name))")
+mycursor.execute(
+    "CREATE TABLE Event (event_name VARCHAR(255), sport VARCHAR(255), PRIMARY KEY(event_name))")
 
 mycursor.execute("CREATE TABLE Games (year INT, season VARCHAR(10) CHECK(season = 'Winter' OR season = 'Summer'), "
                  "city VARCHAR(255), PRIMARY KEY(year, season))")
 
-mycursor.execute("CREATE TABLE Country (name VARCHAR(255), country_code VARCHAR(10), PRIMARY KEY(name))")
+mycursor.execute(
+    "CREATE TABLE Country (name VARCHAR(255), country_code VARCHAR(10), PRIMARY KEY(name))")
 
 mycursor.execute("CREATE TABLE Athlete (id VARCHAR(255), first_name VARCHAR(255), surname VARCHAR(255), "
                  "age INT, height INT, weight INT, gold_medals INT, silver_medals INT, bronze_medals INT, "
