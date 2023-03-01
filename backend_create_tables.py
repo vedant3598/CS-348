@@ -25,7 +25,7 @@ mycursor.execute(
     "CREATE TABLE Country (name VARCHAR(255), country_code VARCHAR(10), PRIMARY KEY(name))")
 
 mycursor.execute("CREATE TABLE Athlete (id VARCHAR(255), first_name VARCHAR(255), surname VARCHAR(255), "
-                 "age INT, height INT, weight INT, gold_medals INT, silver_medals INT, bronze_medals INT, "
+                 "sex CHAR(1) CHECK(sex = 'M' OR sex = 'F'), age INT, height INT NULL, weight INT NULL, gold_medals INT, silver_medals INT, bronze_medals INT, "
                  "country VARCHAR(255), PRIMARY KEY (id), FOREIGN KEY (country) REFERENCES Country(name))")
 
 mycursor.execute("CREATE TABLE Selects (user_id VARCHAR(255), athlete_id VARCHAR(255), PRIMARY KEY(user_id, "
