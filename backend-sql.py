@@ -141,7 +141,7 @@ def insert_selects(user_id, athlete_id):
 
 
 def insert_friends(user_id, friend_id):
-    mycursor.execute("insert into Selects values ({}, {})".format(user_id, friend_id))
+    mycursor.execute("insert into Friends values ({}, {})".format(user_id, friend_id))
     # check if result is inserted
     result = mycursor.fetchall()
     return result
@@ -152,3 +152,14 @@ def insert_participates(athlete_id, event_name, year, season, medal_achieved):
     # check if result is inserted
     result = mycursor.fetchall()
     return result
+
+
+def trigger_rollback_friend(user_id, friend_id):
+    trigger = "create trigger friend_exists_check after insert on Friends" \
+          "referencing new row as nrow" \
+          "for each row" \
+          "when (nrow.{} not in (select * from User where id = {}))" \
+          "begin" \
+          "rollback" \
+          "end;".format(friend_id, friend_id)
+    mycursor.execute(trigger)
