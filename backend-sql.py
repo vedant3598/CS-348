@@ -154,7 +154,7 @@ def insert_participates(athlete_id, event_name, year, season, medal_achieved):
     return result
 
 
-def trigger_rollback_friend(user_id, friend_id):
+def trigger_rollback_friend(friend_id):
     trigger = "create trigger friend_exists_check after insert on Friends" \
           "referencing new row as nrow" \
           "for each row" \
@@ -162,4 +162,13 @@ def trigger_rollback_friend(user_id, friend_id):
           "begin" \
           "rollback" \
           "end;".format(friend_id, friend_id)
+
     mycursor.execute(trigger)
+
+
+def stats_per_country(country):
+    stats_country = "create function stats_country({} varchar(255)" \
+        "returns table(avg_age DOUBLE(4,3), avg_height DOUBLE(6, 3), avg_weight DOUBLE(6, 3))" \
+                    "return table (select avg(age), avg(height), avg(weight) from Athlete where country = {})".format(country, country)
+
+    mycursor.execute(stats_country)
