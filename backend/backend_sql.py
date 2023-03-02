@@ -14,7 +14,7 @@ mycursor = mydb.cursor()
 
 def get_medals_for_country():
     mycursor.execute("select country, COUNT(*) as medal_count from Athlete inner join Participates on Athlete.id = "
-                     "Participates.athlete_id where medal_achieved != 'NA' group by country order by medal_count "
+                     "Participates.athlete_id where medal_achieved is not null group by country order by medal_count "
                      "desc")
 
     result = mycursor.fetchall()
@@ -26,11 +26,11 @@ def get_medals_for_athlete(athlete_id):
                      "Participates on Athlete.id = Participates.athlete_id where medal_achieved = 'bronze' and "
                      "Athlete.id = {}".format(athlete_id))
 
-    mycursor.execute("create view athlete_bronze as select COUNT(*) as count_bronze from Athlete inner join "
+    mycursor.execute("create view athlete_silver as select COUNT(*) as count_silver from Athlete inner join "
                      "Participates on Athlete.id = Participates.athlete_id where medal_achieved = 'silver' and "
                      "Athlete.id = {}".format(athlete_id))
 
-    mycursor.execute("create view athlete_bronze as select COUNT(*) as count_bronze from Athlete inner join "
+    mycursor.execute("create view athlete_gold as select COUNT(*) as count_gold from Athlete inner join "
                      "Participates on Athlete.id = Participates.athlete_id where medal_achieved = 'gold' and "
                      "Athlete.id = {}".format(athlete_id))
 
@@ -57,7 +57,7 @@ def get_athlete(athlete_id):
 
 def get_athletes_by_year_season(year, season):
     mycursor.execute("select * from Games, Participates, Athlete where (year, season) = ({}, {}) group by "
-                     "Athletes.country".format(year, season))
+                     "Athlete.country".format(year, season))
     result = mycursor.fetchall()
     return result
 
