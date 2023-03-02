@@ -14,7 +14,7 @@ mycursor = mydb.cursor()
 
 def get_medals_for_country():
     mycursor.execute("select country, COUNT(*) as medal_count from Athlete inner join Participates on Athlete.id = "
-                     "Participates.athlete_id where medal_achieved is not null group by country order by medal_count "
+                     "Participates.athlete_id where medal_achieved != 'NA' group by country order by medal_count "
                      "desc")
 
     result = mycursor.fetchall()
