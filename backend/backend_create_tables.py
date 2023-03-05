@@ -10,7 +10,6 @@ mydb = mysql.connector.connect(
 
 mycursor = mydb.cursor()
 
-
 mycursor.execute("CREATE TABLE User (id VARCHAR(255), first_name VARCHAR(255), surname VARCHAR(255), "
                  "fav_country VARCHAR(255), email VARCHAR(255), username VARCHAR(255), password VARCHAR(255), "
                  "PRIMARY KEY (id))")
@@ -25,7 +24,7 @@ mycursor.execute(
     "CREATE TABLE Country (name VARCHAR(255), country_code VARCHAR(10), PRIMARY KEY(name))")
 
 mycursor.execute("CREATE TABLE Athlete (id VARCHAR(255), first_name VARCHAR(255), surname VARCHAR(255), "
-                 "sex CHAR(1) CHECK(sex = 'M' OR sex = 'F'), age INT, height INT NULL, weight INT NULL, gold_medals INT, silver_medals INT, bronze_medals INT, "
+                 "sex CHAR(1) CHECK(sex = 'M' OR sex = 'F'), age INT, height INT NULL, weight INT NULL, "
                  "country VARCHAR(255), PRIMARY KEY (id), FOREIGN KEY (country) REFERENCES Country(name))")
 
 mycursor.execute("CREATE TABLE Selects (user_id VARCHAR(255), athlete_id VARCHAR(255), PRIMARY KEY(user_id, "
@@ -46,3 +45,5 @@ mycursor.execute("SHOW TABLES")
 
 for x in mycursor:
     print(x)
+
+mydb.commit()

@@ -105,61 +105,55 @@ def get_max_medals_athlete():
     return result
 
 
-def insert_user(id, first_name, surname, fav_country, email, username, password):
-    mycursor.execute("insert into User values ({}, {}, {}, {}, {}, {}, {})".format(
-        id, first_name, surname, fav_country, email, username, password))
-    # check if result is inserted
-    result = mycursor.fetchall()
-    return result
-
-
-def insert_event(event_name, sport):
+def insert_user(id, first_name, surname, fav_country, email, username, password, ignore=False):
     mycursor.execute(
-        f"insert IGNORE into Event values ('{event_name}', '{sport}')")
+        f"insert {'IGNORE ' if ignore else ' '}into User values ({id}, '{first_name}', '{surname}', '{fav_country}', '{email}', '{username}', '{password}')")
     return
 
 
-def insert_games(year, season, city):
+def insert_event(event_name, sport, ignore=False):
     mycursor.execute(
-        f"insert IGNORE into Games values ({year}, '{season}', '{city}')")
+        f"insert {'IGNORE ' if ignore else ' '} into Event values ('{event_name}', '{sport}')")
     return
 
 
-def insert_country(name, country_code):
+def insert_games(year, season, city, ignore=False):
     mycursor.execute(
-        f"insert IGNORE into Country values ('{name}', '{country_code}')")
+        f"insert {'IGNORE ' if ignore else ' '} into Games values ({year}, '{season}', '{city}')")
     return
 
 
-def insert_athlete(id, first_name, surname, sex, age, height, weight, country, gold_medals=0, silver_medals=0, bronze_medals=0):
+def insert_country(name, country_code, ignore=False):
     mycursor.execute(
-        f"insert IGNORE into Athlete values ({id}, '{first_name}', '{surname}', '{sex}', {age}, {height}, {weight}, {gold_medals}, {silver_medals}, {bronze_medals}, '{country}')")
+        f"insert {'IGNORE ' if ignore else ' '} into Country values ('{name}', '{country_code}')")
     return
 
 
-def insert_selects(user_id, athlete_id):
+def insert_athlete(id, first_name, surname, sex, age, height, weight, country, ignore=False):
     mycursor.execute(
-        "insert into Selects values ({}, {})".format(user_id, athlete_id))
-    # check if result is inserted
-    result = mycursor.fetchall()
-    return result
+        f"insert {'IGNORE ' if ignore else ' '} into Athlete values ({id}, '{first_name}', '{surname}', '{sex}', {age}, {height}, {weight}, '{country}')")
+    return
 
 
-def insert_friends(user_id, friend_id):
+def insert_selects(user_id, athlete_id, ignore=False):
     mycursor.execute(
-        "insert into Friends values ({}, {})".format(user_id, friend_id))
-    # check if result is inserted
-    result = mycursor.fetchall()
-    return result
+        f"insert {'IGNORE ' if ignore else ' '} into Selects values ({user_id}, {athlete_id})")
+    return
 
 
-def insert_participates(athlete_id, event_name, year, season, medal_achieved):
+def insert_friends(user_id, friend_id, ignore=False):
+    mycursor.execute(
+        f"insert {'IGNORE ' if ignore else ' '} into Friends values ({user_id}, {friend_id})")
+    return
+
+
+def insert_participates(athlete_id, event_name, year, season, medal_achieved, ignore=False):
     if (medal_achieved is None):
         mycursor.execute(
-            f"insert IGNORE into Participates values ({athlete_id}, '{event_name}', {year}, '{season}', NULL)")
+            f"insert {'IGNORE ' if ignore else ' '} into Participates values ({athlete_id}, '{event_name}', {year}, '{season}', NULL)")
     else:
         mycursor.execute(
-            f"insert IGNORE into Participates values ({athlete_id}, '{event_name}', {year}, '{season}', '{medal_achieved}')")
+            f"insert {'IGNORE ' if ignore else ' '} into Participates values ({athlete_id}, '{event_name}', {year}, '{season}', '{medal_achieved}')")
     return
 
 
