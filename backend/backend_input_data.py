@@ -5,11 +5,11 @@ from backend_sql import insert_athlete, insert_country, insert_friends, insert_e
 
 
 def fill_sample_users():
-    users = [(200_000, 'Adil', 'K', 'Canada', 'a\@gmail.com', 'adil', 'password'),
+    users = [(200_000, 'Adil', 'K', 'Canada', 'a@gmail.com', 'adil', 'password'),
              (200_001, 'Cameron', 'S', 'Canada',
-              'c\@gmail.com', 'cam', 'password'),
-             (200_002, 'Jay', 'B', 'Canada', 'j\@gmail.com', 'jay', 'password'),
-             (200_003, 'Vedant', 'S', 'Canada', 'v\@gmail.com', 'ved', 'password'),
+              'c@gmail.com', 'cam', 'password'),
+             (200_002, 'Jay', 'B', 'Canada', 'j@gmail.com', 'jay', 'password'),
+             (200_003, 'Vedant', 'S', 'Canada', 'v@gmail.com', 'ved', 'password'),
              ]
 
     selects = [(200_000, 1), (200_000, 2), (200_001, 3), (200_001, 4), (200_002, 5), (200_002, 6), (200_002, 7),
