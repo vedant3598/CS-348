@@ -19,7 +19,8 @@ git clone git@github.com:vedant3598/CS-348.git
 
 Then, to install the packages, run:
 ```
-source backend/env/bin/activate
+python3 -m venv backend/.venv
+source backend/.venv/bin/activate
 pip install -r backend/requirements.txt
 ```
 
