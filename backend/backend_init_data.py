@@ -3,8 +3,11 @@ import csv
 from backend_sql import insert_athlete, insert_country, insert_event, insert_games, insert_participates
 
 
+# Filling in database with sample data
 def fill_db(num_read=-1):
-    '''Takes in a number of fields to read from the csv, if no field is supplied read the entire CSV'''
+    """
+    Takes in a number of fields to read from the csv, if no field is supplied read the entire CSV
+    """
     file = open('./data/athlete_events.csv')
     csvreader = csv.reader(file)
     next(csvreader)  # read header

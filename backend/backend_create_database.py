@@ -8,6 +8,8 @@ mydb = mysql.connector.connect(
 )
 
 mycursor = mydb.cursor()
+
+# Create database olympics
 mycursor.execute("CREATE DATABASE olympics")
 mycursor.execute("SHOW DATABASES")
 

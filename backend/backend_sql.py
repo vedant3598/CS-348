@@ -12,6 +12,7 @@ mydb.autocommit = True
 mycursor = mydb.cursor()
 
 
+# Get medal count for each country
 def get_medals_for_country():
     mycursor.execute("select country, COUNT(*) as medal_count from Athlete inner join Participates on Athlete.id = "
                      "Participates.athlete_id where medal_achieved is not null group by country order by medal_count "
@@ -21,6 +22,7 @@ def get_medals_for_country():
     return result
 
 
+# Get bronze, silver, and gold medal count for selected athlete_id
 def get_medals_for_athlete(athlete_id):
     mycursor.execute("create view athlete_bronze as select COUNT(*) as count_bronze from Athlete inner join "
                      "Participates on Athlete.id = Participates.athlete_id where medal_achieved = 'bronze' and "
@@ -41,6 +43,7 @@ def get_medals_for_athlete(athlete_id):
     return athlete_medals_result
 
 
+# Get list of athletes for selected country
 def get_athletes_by_country(country):
     mycursor.execute(
         "select * from Athlete where country = {}".format(country))
@@ -48,6 +51,7 @@ def get_athletes_by_country(country):
     return result
 
 
+# Get athlete information for selected athlete
 def get_athlete(athlete_id):
     mycursor.execute(
         "select * from Athlete where athlete_id = {}".format(athlete_id))
@@ -55,6 +59,7 @@ def get_athlete(athlete_id):
     return result
 
 
+# Get all athletes for selected year and season
 def get_athletes_by_year_season(year, season):
     mycursor.execute("select * from Games, Participates, Athlete where (year, season) = ({}, {}) group by "
                      "Athlete.country".format(year, season))
@@ -62,6 +67,7 @@ def get_athletes_by_year_season(year, season):
     return result
 
 
+# Get all athletes and the events they participated in
 def select_athletes_events():
     mycursor.execute(
         "select athlete_id, event_name from Participates order by athlete_id desc")
@@ -69,6 +75,7 @@ def select_athletes_events():
     return result
 
 
+# Delete selected athlete for selected user
 def delete_athlete_from_user(user_id, athlete_id):
     mycursor.execute("delete from Selects where user_id = {} and athlete_id = {}".format(
         user_id, athlete_id))
@@ -77,6 +84,7 @@ def delete_athlete_from_user(user_id, athlete_id):
     return result
 
 
+# Insert selected athlete for selected user
 def insert_athlete_into_user(user_id, athlete_id):
     mycursor.execute(
         "insert into Selects values ({}, {})".format(user_id, athlete_id))
@@ -85,6 +93,7 @@ def insert_athlete_into_user(user_id, athlete_id):
     return result
 
 
+# Get event and count of participants that participated in each event
 def find_event_max_participation():
     mycursor.execute("select event_name, COUNT(*) as event_participants from Event inner join Participates on "
                      "Event.event_name = Participates.event_name group by event_name order by event_participants desc"
@@ -93,6 +102,7 @@ def find_event_max_participation():
     return result
 
 
+# Get max medals and athlete name for each event in Olympic history
 def get_max_medals_athlete():
     mycursor.execute("create view athlete_medal_count as select *, COUNT(*) as num_medals from Athlete, Participates "
                      "where Athlete.id = Participates.athlete_id and Participates.medal_achieved is not null group by"
@@ -105,6 +115,7 @@ def get_max_medals_athlete():
     return result
 
 
+# Insert user
 def insert_user(id, first_name, surname, fav_country, email, username, password):
     mycursor.execute("insert into User values ({}, {}, {}, {}, {}, {}, {})".format(
         id, first_name, surname, fav_country, email, username, password))
@@ -113,30 +124,35 @@ def insert_user(id, first_name, surname, fav_country, email, username, password)
     return result
 
 
+# Insert event
 def insert_event(event_name, sport):
     mycursor.execute(
         f"insert IGNORE into Event values ('{event_name}', '{sport}')")
     return
 
 
+# Insert game
 def insert_games(year, season, city):
     mycursor.execute(
         f"insert IGNORE into Games values ({year}, '{season}', '{city}')")
     return
 
 
+# Insert country
 def insert_country(name, country_code):
     mycursor.execute(
         f"insert IGNORE into Country values ('{name}', '{country_code}')")
     return
 
 
+# Insert athlete
 def insert_athlete(id, first_name, surname, sex, age, height, weight, country, gold_medals=0, silver_medals=0, bronze_medals=0):
     mycursor.execute(
         f"insert IGNORE into Athlete values ({id}, '{first_name}', '{surname}', '{sex}', {age}, {height}, {weight}, {gold_medals}, {silver_medals}, {bronze_medals}, '{country}')")
     return
 
 
+# Insert selected athlete id for user id
 def insert_selects(user_id, athlete_id):
     mycursor.execute(
         "insert into Selects values ({}, {})".format(user_id, athlete_id))
@@ -145,6 +161,7 @@ def insert_selects(user_id, athlete_id):
     return result
 
 
+# Insert friend
 def insert_friends(user_id, friend_id):
     mycursor.execute(
         "insert into Friends values ({}, {})".format(user_id, friend_id))
@@ -153,6 +170,7 @@ def insert_friends(user_id, friend_id):
     return result
 
 
+# Insert athlete, the event, year, and season in which they participated and medal achieved
 def insert_participates(athlete_id, event_name, year, season, medal_achieved):
     if (medal_achieved is None):
         mycursor.execute(
@@ -163,6 +181,7 @@ def insert_participates(athlete_id, event_name, year, season, medal_achieved):
     return
 
 
+# Creates a trigger to ensure that friend id added into Friends table exists; otherwise, rollback insertion
 def trigger_rollback_friend(friend_id):
     trigger = "create trigger friend_exists_check after insert on Friends" \
         "referencing new row as nrow" \
@@ -175,6 +194,7 @@ def trigger_rollback_friend(friend_id):
     mycursor.execute(trigger)
 
 
+# Get average age, height, and weight statistics for specified country
 def stats_per_country(country):
     stats_country = "create function stats_country({} varchar(255)" \
         "returns table(avg_age DOUBLE(4,3), avg_height DOUBLE(6, 3), avg_weight DOUBLE(6, 3))" \
