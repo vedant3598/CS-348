@@ -29,15 +29,7 @@ pip install -r backend/requirements.txt
 To set up the database, make sure MySQL is installed. Then run:
 ```
 cd backend
-python3 backend_create_database.py
-python3 backend_create_tables.py
-```
-
-### Adding sample data
-
-To add sample data to the database, run the following:
-```
-python3 backend_init_data.py [num_of_columns_to_add]
+python3 backend_init_sample.py
 ```
 
 ## Running the server
