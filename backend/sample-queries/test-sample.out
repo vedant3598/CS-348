@@ -1,0 +1,15 @@
+id	first_name	surname	sex	age	height	weight	country	count_gold	count_silver	count_bronze
+1	A	Dijiang	M	24	180	80	China	0	0	0
+2	A	Lamusi	M	23	170	60	China	0	0	0
+3	Gunnar Nielsen	Aaby	M	24	NULL	NULL	Denmark	0	0	0
+4	Edgar Lindenau	Aabye	M	34	NULL	NULL	Denmark/Sweden	1	0	0
+5	Christine Jacoba	Aaftink	F	21	185	82	Netherlands	0	0	0
+6	Per Knut	Aaland	M	31	188	75	United States	0	0	0
+7	John	Aalberg	M	31	183	72	United States	0	0	0
+country	medal_count
+Denmark/Sweden	1
+id	first_name	surname
+200002	Jay	B
+200003	Vedant	S
+id	first_name	surname	country	event_name	most_medals
+4	Edgar Lindenau	Aabye	Denmark/Sweden	Tug-Of-War Men's Tug-Of-War	1
