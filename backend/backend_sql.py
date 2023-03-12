@@ -75,6 +75,22 @@ def select_athletes_events():
     return result
 
 
+# Get all countries
+def select_countries():
+    mycursor.execute(
+        "select name from Country")
+    result = mycursor.fetchall()
+    return result
+
+
+# Get user's friends
+def select_friends(user_id):
+    mycursor.execute(
+        "select friend_id from Friends where user_id = {}".format(user_id))
+    result = mycursor.fetchall()
+    return result
+
+
 # Delete selected athlete for selected user
 def delete_athlete_from_user(user_id, athlete_id):
     mycursor.execute("delete from Selects where user_id = {} and athlete_id = {}".format(
