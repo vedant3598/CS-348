@@ -42,7 +42,7 @@ def insert_friend():
 
 # Favourite an athlete
 @app.route("/favourite-athlete", methods=["POST"])
-def favourite_athlete():
+def insert_favourite_athlete():
     user_id = request.args.get('user_id')
     athlete_id = request.args.get('athlete_id')
     insert_selects(user_id, athlete_id)
@@ -50,10 +50,39 @@ def favourite_athlete():
 
 # Get user's friends
 @app.route("/friends", methods=["GET"])
-def favourite_athlete():
+def get_user_friends():
     user_id = request.args.get('user_id')
     return select_friends(user_id)
 
 
-# Get all user’s friends
+# Get medal stats for all athletes
+@app.route("/medal-stats", methods=["GET"])
+def get_medal_stats():
+    return get_medals_for_athletes()
+
+
+# Get country performance and athletes participated for selected country
+@app.route("/country-stats", methods=["GET"])
+def get_country_stats():
+    country = request.args.get('country')
+    country_stats = stats_per_country(country)
+    athletes = get_athletes_by_country(country)
+    super_fans = get_super_fans(country)
+    return country_stats, athletes, super_fans
+
+
+# Get athlete who has won the most medals for each event
+@app.route("/max-medals-athlete", methods=["GET"])
+def get_max_medal_athlete_event():
+    return get_max_medals_athlete()
+
+
+# Deselect athlete from user
+@app.route("/delete-user-selected-athlete", methods=["POST"])
+def delete_user_selected_athlete():
+    user_id = request.args.get('user_id')
+    athlete_id = request.args.get('athlete_id')
+    delete_athlete_from_user(user_id, athlete_id)
+
+
 app.run(host='localhost', port=5000)

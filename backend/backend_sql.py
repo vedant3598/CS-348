@@ -22,6 +22,18 @@ def get_medals_for_country():
     return result
 
 
+def get_medals_for_athletes():
+    mycursor.execute("select *, (select count(*) from Athlete, Participates where Athlete.id = "
+                     "Participates.athlete_id and medal_achieved = 'gold' and Athlete.id = A.id) as count_gold, "
+                     "(select count(*) from Athlete, Participates where Athlete.id = "
+                     "Participates.athlete_id and medal_achieved = 'silver' and Athlete.id = A.id) as count_silver, "
+                     "(select count(*) from Athlete, Participates where Athlete.id = Participates.athlete_id and "
+                     "medal_achieved = 'bronze' and Athlete.id = A.id) as count_bronze from Athlete as A")
+
+    athletes_medals_result = mycursor.fetchall()
+    return athletes_medals_result
+
+
 # Get bronze, silver, and gold medal count for selected athlete_id
 def get_medals_for_athlete(athlete_id):
     mycursor.execute("create view athlete_bronze as select COUNT(*) as count_bronze from Athlete inner join "
@@ -47,6 +59,15 @@ def get_medals_for_athlete(athlete_id):
 def get_athletes_by_country(country):
     mycursor.execute(
         "select * from Athlete where country = {}".format(country))
+    result = mycursor.fetchall()
+    return result
+
+
+# Get list of users who have selected every athlete for selected country
+def get_super_fans(country):
+    mycursor.execute(
+        "select id, first_name, surname from User where not exists (select id from Athlete where country = {} except "
+        "select athlete_id from Selects where user_id = User.id".format(country))
     result = mycursor.fetchall()
     return result
 
