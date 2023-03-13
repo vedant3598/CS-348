@@ -224,6 +224,12 @@ def trigger_rollback_friend(friend_id):
 
     mycursor.execute(trigger)
 
+def event_stats_per_country(country):
+    event_stats_country = "select event_name, count(*) as medals_achieved" \
+        "from Athlete inner join participates on Athlete.id = participates.athlete_id" \
+                    "where country={} and medal_achieved is not null group by event_name".format(
+                        country)
+    mycursor.execute(event_stats_country)
 
 # Get average age, height, and weight statistics for specified country
 def stats_per_country(country):
@@ -234,6 +240,13 @@ def stats_per_country(country):
 
     mycursor.execute(stats_country)
 
+# Get a relation that includes all tuples that somehow match the query parameter
+def searchDB(query):
+    searchdb = "select * from participates inner join (Athlete inner join Country on Athlete.country=Country.name)" \
+        "on participates.athlete_id = id where" \
+                    "first_name like '%{}%' or surname like '%{}%' or country like '%{}%' or event_name like '%{}%'".format(
+                        query, query, query, query)
+    mycursor.execute(searchdb)
 
 def get_result():
     result = mycursor.fetchall()
