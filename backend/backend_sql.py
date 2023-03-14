@@ -158,6 +158,18 @@ def insert_user(id, first_name, surname, fav_country, email, username, password,
         f"insert {'IGNORE ' if ignore else ' '}into User values ({id}, '{first_name}', '{surname}', '{fav_country}', '{email}', '{username}', '{password}')")
     return
 
+def delete_user(id):
+    mycursor.execute(
+        f"delete from Selects where user_id={id}"
+    )
+    mycursor.execute(
+        f"delete from Friends where user_id={id} or friend_id={id}"
+    )
+    mycursor.execute(
+        f"delete from User where id={id}"
+    )
+    return
+    
 
 # Insert event
 def insert_event(event_name, sport, ignore=False):
@@ -223,6 +235,7 @@ def trigger_rollback_friend(friend_id):
               "end;".format(friend_id, friend_id)
 
     mycursor.execute(trigger)
+    return
 
 
 def event_stats_per_country(country):
@@ -231,6 +244,7 @@ def event_stats_per_country(country):
                           "where country={} and medal_achieved is not null group by event_name".format(
         country)
     mycursor.execute(event_stats_country)
+    return
 
 
 # Get average age, height, and weight statistics for specified country
@@ -241,6 +255,7 @@ def stats_per_country(country):
         country, country)
 
     mycursor.execute(stats_country)
+    return
 
 
 # Get a relation that includes all tuples that somehow match the query parameter
@@ -250,6 +265,7 @@ def search_DB(query):
                "first_name like '%{}%' or surname like '%{}%' or country like '%{}%' or event_name like '%{}%'".format(
         query, query, query, query)
     mycursor.execute(search_db)
+    return
 
 
 def get_result():

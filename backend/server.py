@@ -117,7 +117,7 @@ def delete_user_selected_athlete():
 
 
 # Insert new user
-@app.route("insert-new-user", methods=["POST"])
+@app.route("/insert-new-user", methods=["POST"])
 def insert_new_user():
     user_id = request.args.get('user_id')
     first_name = request.args.get('first_name')
@@ -132,6 +132,12 @@ def insert_new_user():
     else:
         ignore = False
     insert_user(user_id, first_name, surname, fav_country, email, username, password, ignore)
+
+# Delete existing user
+@app.route("/delete-user", methods=["POST"])
+def delete_existing_user():
+    user_id = request.args.get('user_id')
+    delete_user(user_id)
 
 
 # Search the majority of the data using a single string
