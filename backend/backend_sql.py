@@ -244,12 +244,12 @@ def stats_per_country(country):
 
 
 # Get a relation that includes all tuples that somehow match the query parameter
-def searchDB(query):
-    searchdb = "select * from participates inner join (Athlete inner join Country on Athlete.country=Country.name)" \
+def search_DB(query):
+    search_db = "select * from participates inner join (Athlete inner join Country on Athlete.country=Country.name)" \
                "on participates.athlete_id = id where" \
                "first_name like '%{}%' or surname like '%{}%' or country like '%{}%' or event_name like '%{}%'".format(
         query, query, query, query)
-    mycursor.execute(searchdb)
+    mycursor.execute(search_db)
 
 
 def get_result():

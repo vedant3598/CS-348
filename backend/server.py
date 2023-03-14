@@ -32,7 +32,7 @@ def get_athlete_data():
     return athlete_data, athlete_medal_count
 
 
-# Insert a friend for user
+# Insert a friend for user; trigger will be activated if friend_id does not exist
 @app.route("/insert-friend", methods=["POST"])
 def insert_friend():
     user_id = request.args.get('user_id')
@@ -109,6 +109,13 @@ def delete_user_selected_athlete():
     delete_athlete_from_user(user_id, athlete_id)
 
 
+@app.route("/delete-user-selected-athlete", methods=["POST"])
+def delete_user_selected_athlete():
+    user_id = request.args.get('user_id')
+    athlete_id = request.args.get('athlete_id')
+    delete_athlete_from_user(user_id, athlete_id)
+
+
 # Insert new user
 @app.route("insert-new-user", methods=["POST"])
 def insert_new_user():
@@ -130,8 +137,8 @@ def insert_new_user():
 # Search the majority of the data using a single string
 @app.route("/search", methods=["GET"])
 def search():
-    queryString = request.args.get('query')
-    return searchDB(queryString)
+    query_string = request.args.get('query')
+    return search_DB(query_string)
 
 
 app.run(host='localhost', port=5000)
