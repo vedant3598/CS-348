@@ -69,6 +69,7 @@ def get_country_athlete_stats():
     athletes = get_athletes_by_country(country)
     return country_stats, athletes
 
+
 # Get all the super-fans for a selected country
 @app.route("/country-super-fans", methods=["GET"])
 def get_country_super_fans():
@@ -76,11 +77,23 @@ def get_country_super_fans():
     super_fans = get_super_fans(country)
     return super_fans
 
+
 # Get all information about medals and events for a selected country
 def get_country_event_stats():
     country = request.args.get('country')
     event_stats = event_stats_per_country(country)
     return event_stats
+
+
+# Get country performance and athletes participated for selected country
+@app.route("/country-stats", methods=["GET"])
+def get_country_stats():
+    country = request.args.get('country')
+    country_stats = stats_per_country(country)
+    athletes = get_athletes_by_country(country)
+    super_fans = get_super_fans(country)
+    return country_stats, athletes, super_fans
+
 
 # Get athlete who has won the most medals for each event
 @app.route("/max-medals-athlete", methods=["GET"])
@@ -95,6 +108,7 @@ def delete_user_selected_athlete():
     athlete_id = request.args.get('athlete_id')
     delete_athlete_from_user(user_id, athlete_id)
 
+
 # Insert new user
 @app.route("insert-new-user", methods=["POST"])
 def insert_new_user():
@@ -105,10 +119,13 @@ def insert_new_user():
     email = request.args.get('email')
     username = request.args.get('username')
     password = request.args.get('password')
-    
-    if (not (user_id and first_name and surname and fav_country and email and username and password)): ignore = True
-    else: ignore = False
+
+    if not (user_id and first_name and surname and fav_country and email and username and password):
+        ignore = True
+    else:
+        ignore = False
     insert_user(user_id, first_name, surname, fav_country, email, username, password, ignore)
+
 
 # Search the majority of the data using a single string
 @app.route("/search", methods=["GET"])
