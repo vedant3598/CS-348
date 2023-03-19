@@ -2,18 +2,18 @@ import sys
 import csv
 import os
 import mysql.connector
-from backend_sql import insert_friends, insert_selects, insert_user
+from backend_sql import insert_friends, insert_favourites, insert_user
 
 
 def fill_sample_users():
-    users = [('Adil', 'K', 'CAN', 'a@gmail.com', 'adil', 'password'),
-             ('Cameron', 'S', 'CAN', 'c@gmail.com', 'cam', 'password'),
-             ('Jay', 'B', 'CAN', 'j@gmail.com', 'jay', 'password'),
-             ('Vedant', 'S', 'CAN', 'v@gmail.com', 'ved', 'password'),
+    users = [('Adil', 'K', 'USA', 'a@gmail.com', 'adil', 'password'),
+             ('Cameron', 'S', 'USA', 'c@gmail.com', 'cam', 'password'),
+             ('Jay', 'B', 'USA', 'j@gmail.com', 'jay', 'password'),
+             ('Vedant', 'S', 'USA', 'v@gmail.com', 'ved', 'password'),
              ]
 
-    selects = [(1, 1), (1, 2), (2, 3), (2, 4), (3, 5), (3, 6), (3, 7),
-               (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6), (4, 7)]
+    favourites = [(1, 1), (1, 2), (2, 3), (2, 4), (3, 5), (3, 6), (3, 7),
+                  (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6), (4, 7)]
 
     friends = [(1, 2), (1, 3), (1, 4),
                (2, 1), (2, 3), (2, 4),
@@ -23,15 +23,15 @@ def fill_sample_users():
     for first_name, last_name, fav_country, email, username, password in users:
         print(first_name, last_name, fav_country, email, username, password)
         insert_user(first_name, last_name, fav_country,
-                    email, username, password, ignore=True)
+                    email, username, password)
 
-    for uid, aid in selects:
+    for uid, aid in favourites:
         print(uid, aid)
-        insert_selects(uid, aid, ignore=True)
+        insert_favourites(uid, aid)
 
     for uid, fid in friends:
         print(uid, fid)
-        insert_friends(uid, fid, ignore=True)
+        insert_friends(uid, fid)
 
 
 def escape_name(s):

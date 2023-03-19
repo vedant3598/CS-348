@@ -47,10 +47,12 @@ def insert_favourite_athlete():
     data = request.form
     user_id = data['user_id']
     athlete_id = data['athlete_id']
-    insert_selects(user_id, athlete_id)
+    insert_favourites(user_id, athlete_id)
     return "Favourited!"
 
 # Get user's friends
+
+
 @app.route("/friends", methods=["GET"])
 def get_user_friends():
     user_id = request.args.get('user_id')
@@ -63,6 +65,8 @@ def get_medal_stats():
     return get_medals_for_athletes()
 
 # Get all the super-fans for a selected country
+
+
 @app.route("/country-super-fans", methods=["GET"])
 def get_country_super_fans():
     country = request.args.get('country')

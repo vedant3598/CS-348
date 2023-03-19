@@ -74,7 +74,7 @@ def get_athletes_by_country(country):
 def get_super_fans(country):
     mycursor.execute(
         "select id, first_name, surname from User where not exists (select id from Athlete where country = \"{}\" except "
-        "(select athlete_id from Selects where user_id = User.id))".format(country))
+        "(select athlete_id from Favourites where user_id = User.id))".format(country))
     result = mycursor.fetchall()
     return result
 
@@ -121,7 +121,7 @@ def select_friends(user_id):
 
 # Delete selected athlete for selected user
 def delete_athlete_from_user(user_id, athlete_id):
-    mycursor.execute("delete from Selects where user_id = {} and athlete_id = {}".format(
+    mycursor.execute("delete from Favourites where user_id = {} and athlete_id = {}".format(
         user_id, athlete_id))
     return
 
@@ -129,7 +129,7 @@ def delete_athlete_from_user(user_id, athlete_id):
 # Insert selected athlete for selected user
 def insert_athlete_into_user(user_id, athlete_id):
     mycursor.execute(
-        "insert into Selects values ({}, {})".format(user_id, athlete_id))
+        "insert into Favourites values ({}, {})".format(user_id, athlete_id))
     # check if result is inserted
     result = mycursor.fetchall()
     return result
@@ -183,7 +183,7 @@ def insert_user(first_name, surname, fav_country, email, username, password, ign
 
 def delete_user(id):
     mycursor.execute(
-        f"delete from Selects where user_id={id}"
+        f"delete from Favourites where user_id={id}"
     )
     mycursor.execute(
         f"delete from Friends where user_id={id} or friend_id={id}"
@@ -223,9 +223,9 @@ def insert_athlete(id, first_name, surname, sex, age, height, weight, country, i
 
 
 # Insert selected athlete id for user id
-def insert_selects(user_id, athlete_id, ignore=False):
+def insert_favourites(user_id, athlete_id, ignore=False):
     mycursor.execute(
-        f"insert {'IGNORE ' if ignore else ' '} into Selects values ({user_id}, {athlete_id})")
+        f"insert {'IGNORE ' if ignore else ' '} into Favourites values ({user_id}, {athlete_id})")
     return
 
 

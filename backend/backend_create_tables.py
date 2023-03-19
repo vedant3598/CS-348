@@ -33,8 +33,8 @@ mycursor.execute("CREATE TABLE Athlete (id INT, first_name VARCHAR(255), surname
                  "sex CHAR(1) CHECK(sex = 'M' OR sex = 'F'), age INT, height INT NULL, weight INT NULL, "
                  "country VARCHAR(255), PRIMARY KEY (id), FOREIGN KEY (country) REFERENCES Country(country_code))")
 
-# Creates Selects table (users select athletes)
-mycursor.execute("CREATE TABLE Selects (user_id INT, athlete_id INT, PRIMARY KEY(user_id, "
+# Creates Favourites table (users select athletes)
+mycursor.execute("CREATE TABLE Favourites (user_id INT, athlete_id INT, PRIMARY KEY(user_id, "
                  "athlete_id), FOREIGN KEY (user_id) REFERENCES User(id), FOREIGN KEY(athlete_id) REFERENCES "
                  "Athlete(id))")
 

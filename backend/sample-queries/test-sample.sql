@@ -33,9 +33,9 @@ order by medal_count desc;
 select id, first_name, surname
 from User
 where not exists (
-  select id from Athlete where country = "United States"
+  select id from Athlete where country = "USA"
   except
-  select athlete_id from Selects where user_id = User.id
+  select athlete_id from Favourites where user_id = User.id
 );
 
 

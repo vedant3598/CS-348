@@ -53,6 +53,6 @@ The current SQL queries that are coded are the following. Only the ones with an 
 8. Inserting an athlete to a user.
 9. Find the event that has the maximum number of athletes participating.
 10. Getting the athlete that won the maximum number of medals per event.
-11. Adding a user, event, game, country, athlete, user selects, user friends, athlete participates.
+11. Adding a user, event, game, country, athlete, user favourites, user friends, athlete participates.
 12. Trigger to rollback a friend request if the friend does not exist.
 13. Getting the stats per country.
