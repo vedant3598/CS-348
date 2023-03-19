@@ -1,7 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createGlobalStyle } from 'styled-components';
-import App from './App';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from 'react-router-dom';
+import {
+  Athlete, Country, Home, Login, User,
+} from './pages';
 import reportWebVitals from './reportWebVitals';
 
 const GlobalStyle = createGlobalStyle`
@@ -11,11 +17,35 @@ const GlobalStyle = createGlobalStyle`
     margin: 0;
   }
 `;
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />,
+  },
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    path: '/user/:userid',
+    element: <User />,
+  },
+  {
+    path: '/country/:countrycode',
+    element: <Country />,
+  },
+  {
+    path: '/athlete/:athleteid',
+    element: <Athlete />,
+  },
+]);
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <GlobalStyle />
-    <App />
+    <RouterProvider router={router} />
   </React.StrictMode>,
 );
 
