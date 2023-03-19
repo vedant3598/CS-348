@@ -148,4 +148,4 @@ def welcome():
     return 'CS-348 Backend Server'
 
 
-app.run(host='localhost', port=5000)
+app.run(host='localhost', port=5000, debug=True)
