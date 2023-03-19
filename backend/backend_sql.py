@@ -22,6 +22,18 @@ def get_medals_for_country():
     return result
 
 
+def get_medals_for_athletes():
+    mycursor.execute("select *, (select count(*) from Athlete, Participates where Athlete.id = "
+                     "Participates.athlete_id and medal_achieved = 'gold' and Athlete.id = A.id) as count_gold, "
+                     "(select count(*) from Athlete, Participates where Athlete.id = "
+                     "Participates.athlete_id and medal_achieved = 'silver' and Athlete.id = A.id) as count_silver, "
+                     "(select count(*) from Athlete, Participates where Athlete.id = Participates.athlete_id and "
+                     "medal_achieved = 'bronze' and Athlete.id = A.id) as count_bronze from Athlete as A")
+
+    athletes_medals_result = mycursor.fetchall()
+    return athletes_medals_result
+
+
 # Get bronze, silver, and gold medal count for selected athlete_id
 def get_medals_for_athlete(athlete_id):
     mycursor.execute("create view athlete_bronze as select COUNT(*) as count_bronze from Athlete inner join "
@@ -51,6 +63,15 @@ def get_athletes_by_country(country):
     return result
 
 
+# Get list of users who have selected every athlete for selected country
+def get_super_fans(country):
+    mycursor.execute(
+        "select id, first_name, surname from User where not exists (select id from Athlete where country = {} except "
+        "select athlete_id from Selects where user_id = User.id".format(country))
+    result = mycursor.fetchall()
+    return result
+
+
 # Get athlete information for selected athlete
 def get_athlete(athlete_id):
     mycursor.execute(
@@ -71,6 +92,22 @@ def get_athletes_by_year_season(year, season):
 def select_athletes_events():
     mycursor.execute(
         "select athlete_id, event_name from Participates order by athlete_id desc")
+    result = mycursor.fetchall()
+    return result
+
+
+# Get all countries
+def select_countries():
+    mycursor.execute(
+        "select name from Country")
+    result = mycursor.fetchall()
+    return result
+
+
+# Get user's friends
+def select_friends(user_id):
+    mycursor.execute(
+        "select friend_id from Friends where user_id = {}".format(user_id))
     result = mycursor.fetchall()
     return result
 
@@ -121,6 +158,18 @@ def insert_user(id, first_name, surname, fav_country, email, username, password,
         f"insert {'IGNORE ' if ignore else ' '}into User values ({id}, '{first_name}', '{surname}', '{fav_country}', '{email}', '{username}', '{password}')")
     return
 
+def delete_user(id):
+    mycursor.execute(
+        f"delete from Selects where user_id={id}"
+    )
+    mycursor.execute(
+        f"delete from Friends where user_id={id} or friend_id={id}"
+    )
+    mycursor.execute(
+        f"delete from User where id={id}"
+    )
+    return
+    
 
 # Insert event
 def insert_event(event_name, sport, ignore=False):
@@ -178,24 +227,45 @@ def insert_participates(athlete_id, event_name, year, season, medal_achieved, ig
 # Creates a trigger to ensure that friend id added into Friends table exists; otherwise, rollback insertion
 def trigger_rollback_friend(friend_id):
     trigger = "create trigger friend_exists_check after insert on Friends" \
-        "referencing new row as nrow" \
-        "for each row" \
-        "when (nrow.{} not in (select * from User where id = {}))" \
-        "begin" \
-        "rollback" \
-        "end;".format(friend_id, friend_id)
+              "referencing new row as nrow" \
+              "for each row" \
+              "when (nrow.{} not in (select * from User where id = {}))" \
+              "begin" \
+              "rollback" \
+              "end;".format(friend_id, friend_id)
 
     mycursor.execute(trigger)
+    return
+
+
+def event_stats_per_country(country):
+    event_stats_country = "select event_name, count(*) as medals_achieved" \
+                          "from Athlete inner join participates on Athlete.id = participates.athlete_id" \
+                          "where country={} and medal_achieved is not null group by event_name".format(
+        country)
+    mycursor.execute(event_stats_country)
+    return
 
 
 # Get average age, height, and weight statistics for specified country
 def stats_per_country(country):
     stats_country = "create function stats_country({} varchar(255)" \
-        "returns table(avg_age DOUBLE(4,3), avg_height DOUBLE(6, 3), avg_weight DOUBLE(6, 3))" \
+                    "returns table(avg_age DOUBLE(4,3), avg_height DOUBLE(6, 3), avg_weight DOUBLE(6, 3))" \
                     "return table (select avg(age), avg(height), avg(weight) from Athlete where country = {})".format(
-                        country, country)
+        country, country)
 
     mycursor.execute(stats_country)
+    return
+
+
+# Get a relation that includes all tuples that somehow match the query parameter
+def search_DB(query):
+    search_db = "select * from participates inner join (Athlete inner join Country on Athlete.country=Country.name)" \
+               "on participates.athlete_id = id where" \
+               "first_name like '%{}%' or surname like '%{}%' or country like '%{}%' or event_name like '%{}%'".format(
+        query, query, query, query)
+    mycursor.execute(search_db)
+    return
 
 
 def get_result():
