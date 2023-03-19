@@ -11,7 +11,6 @@ mydb = mysql.connector.connect(
 mydb.autocommit = True
 mycursor = mydb.cursor()
 
-
 # Get medal count for each country
 def get_medals_for_country():
     mycursor.execute("select country, COUNT(*) as medal_count from Athlete inner join Participates on Athlete.id = "
@@ -75,7 +74,7 @@ def get_super_fans(country):
 # Get athlete information for selected athlete
 def get_athlete(athlete_id):
     mycursor.execute(
-        "select * from Athlete where athlete_id = {}".format(athlete_id))
+        "select * from Athlete where id = {}".format(athlete_id))
     result = mycursor.fetchall()
     return result
 
@@ -260,7 +259,7 @@ def stats_per_country(country):
 
 # Get a relation that includes all tuples that somehow match the query parameter
 def search_DB(query):
-    search_db = "select * from participates inner join (Athlete inner join Country on Athlete.country=Country.name)" \
+    search_db = "select * from participates inner join (Athlete inner join Country on Athlete.country=Country.country_code)" \
                "on participates.athlete_id = id where" \
                "first_name like '%{}%' or surname like '%{}%' or country like '%{}%' or event_name like '%{}%'".format(
         query, query, query, query)

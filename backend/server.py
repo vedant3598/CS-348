@@ -35,16 +35,18 @@ def get_athlete_data():
 # Insert a friend for user; trigger will be activated if friend_id does not exist
 @app.route("/insert-friend", methods=["POST"])
 def insert_friend():
-    user_id = request.args.get('user_id')
-    friend_id = request.args.get('friend_id')
+    data = request.form
+    user_id = data['user_id']
+    friend_id = data['friend_id']
     insert_friends(user_id, friend_id)
 
 
 # Favourite an athlete
 @app.route("/favourite-athlete", methods=["POST"])
 def insert_favourite_athlete():
-    user_id = request.args.get('user_id')
-    athlete_id = request.args.get('athlete_id')
+    data = request.form
+    user_id = data['user_id']
+    athlete_id = data['athlete_id']
     insert_selects(user_id, athlete_id)
 
 
@@ -79,6 +81,7 @@ def get_country_super_fans():
 
 
 # Get all information about medals and events for a selected country
+@app.route("/country-event-stats", methods=["GET"])
 def get_country_event_stats():
     country = request.args.get('country')
     event_stats = event_stats_per_country(country)
@@ -104,21 +107,23 @@ def get_max_medal_athlete_event():
 # Deselect athlete from user
 @app.route("/delete-user-selected-athlete", methods=["POST"])
 def delete_user_selected_athlete():
-    user_id = request.args.get('user_id')
-    athlete_id = request.args.get('athlete_id')
+    data = request.form
+    user_id = data['user_id']
+    athlete_id = data['athlete_id']
     delete_athlete_from_user(user_id, athlete_id)
 
 
 # Insert new user
 @app.route("/insert-new-user", methods=["POST"])
 def insert_new_user():
-    user_id = request.args.get('user_id')
-    first_name = request.args.get('first_name')
-    surname = request.args.get('surname')
-    fav_country = request.args.get('fav_country')
-    email = request.args.get('email')
-    username = request.args.get('username')
-    password = request.args.get('password')
+    data = request.form
+    user_id = data['user_id']
+    first_name = data['first_name']
+    surname = data['surname']
+    fav_country = data['fav_country']
+    email = data['email']
+    username = data['username']
+    password = data['password']
 
     if not (user_id and first_name and surname and fav_country and email and username and password):
         ignore = True
@@ -128,11 +133,10 @@ def insert_new_user():
                 email, username, password, ignore)
 
 # Delete existing user
-
-
 @app.route("/delete-user", methods=["POST"])
 def delete_existing_user():
-    user_id = request.args.get('user_id')
+    data = request.form
+    user_id = data['user_id']
     delete_user(user_id)
 
 
@@ -142,10 +146,8 @@ def search():
     query_string = request.args.get('query')
     return search_DB(query_string)
 
-
 @app.route("/")
 def welcome():
     return 'CS-348 Backend Server'
-
 
 app.run(host='localhost', port=5000)
