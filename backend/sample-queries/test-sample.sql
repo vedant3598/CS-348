@@ -21,11 +21,12 @@ from Athlete as A;
 
 /* Query 2: returns the number of medals for each country in descending order */
 
-select country, count(*) as medal_count
+select country, sum(case when (medal_achieved is null) then 0 else 1 end) as medal_count
 from Athlete, Participates
-where Athlete.id = Participates.athlete_id and medal_achieved is not null
+where Athlete.id = Participates.athlete_id
 group by country
 order by medal_count desc;
+
 
 
 /* Query 3: returns information about the country’s performance at the olympics and the athletes that have participated for this country */
@@ -41,21 +42,21 @@ where not exists (
 
 /* Query 4: returns the athlete that wins the most medals for each event */
 
-create view athlete_medals as select *
+create view athlete_medals as
+    select *
     from (
-        select id, event_name, count(*) as num_medals
-        from Athlete join Participates on Athlete.id = Participates.athlete_id 
-        where Participates.medal_achieved is not null
-        group by id, event_name
+   	 select id, sum(case when (medal_achieved is null) then 0 else 1 end) as num_medals
+   	 from Athlete join Participates on
+   		  Athlete.id = Participates.athlete_id
+   	 group by id
     ) as S join Athlete using(id);
 
-select id, first_name, surname, country, event_name, most_medals
+
+select id, first_name, surname, country, num_medals, rank() over (order by (num_medals) desc) as medal_rank
 from (
-    select event_name, id, max(num_medals) as
-    most_medals
-    from athlete_medals
-    group by event_name, id
-    order by most_medals desc
+  select id, num_medals
+  from athlete_medals
+  group by id
 ) as T join Athlete using(id);
 
-
+drop view athlete_medals;

@@ -15,9 +15,8 @@ mycursor = mydb.cursor(dictionary=True, buffered=True)
 
 
 def get_medals_for_country():
-    mycursor.execute("select country, COUNT(*) as medal_count from Athlete inner join Participates on Athlete.id = "
-                     "Participates.athlete_id where medal_achieved is not null group by country order by medal_count "
-                     "desc")
+    mycursor.execute("select country, sum(case when (medal_achieved is null) then 0 else 1 end) as medal_count " \
+                     "from Athlete, Participates where Athlete.id = Participates.athlete_id group by country order by medal_count desc")
 
     result = mycursor.fetchall()
     return result
