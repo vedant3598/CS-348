@@ -45,7 +45,7 @@ def insert_friend():
 def insert_favourite_athlete():
     user_id = request.args.get('user_id')
     athlete_id = request.args.get('athlete_id')
-    insert_selects(user_id, athlete_id)
+    insert_favourites(user_id, athlete_id)
 
 
 # Get user's friends

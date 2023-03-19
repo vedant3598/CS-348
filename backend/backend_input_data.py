@@ -2,7 +2,7 @@ import sys
 import csv
 import os
 import mysql.connector
-from backend_sql import insert_friends, insert_selects, insert_user
+from backend_sql import insert_friends, insert_favourites, insert_user
 
 
 def fill_sample_users():
@@ -13,8 +13,8 @@ def fill_sample_users():
              (200_003, 'Vedant', 'S', 'Canada', 'v@gmail.com', 'ved', 'password'),
              ]
 
-    selects = [(200_000, 1), (200_000, 2), (200_001, 3), (200_001, 4), (200_002, 5), (200_002, 6), (200_002, 7),
-               (200_003, 1), (200_003, 2), (200_003, 3), (200_003, 4), (200_003, 5), (200_003, 6), (200_003, 7)]
+    favourites = [(200_000, 1), (200_000, 2), (200_001, 3), (200_001, 4), (200_002, 5), (200_002, 6), (200_002, 7),
+                  (200_003, 1), (200_003, 2), (200_003, 3), (200_003, 4), (200_003, 5), (200_003, 6), (200_003, 7)]
 
     friends = [(200_000, 200_001), (200_000, 200_002), (200_000, 200_003),
                (200_001, 200_000), (200_001, 200_002), (200_001, 200_003),
@@ -26,9 +26,9 @@ def fill_sample_users():
         insert_user(uid, first_name, last_name, fav_country,
                     email, username, password, ignore=True)
 
-    for uid, aid in selects:
+    for uid, aid in favourites:
         print(uid, aid)
-        insert_selects(uid, aid, ignore=True)
+        insert_favourites(uid, aid, ignore=True)
 
     for uid, fid in friends:
         print(uid, fid)

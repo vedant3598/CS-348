@@ -35,7 +35,7 @@ from User
 where not exists (
   select id from Athlete where country = "United States"
   except
-  select athlete_id from Selects where user_id = User.id
+  select athlete_id from Favourites where user_id = User.id
 );
 
 

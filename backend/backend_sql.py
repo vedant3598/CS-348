@@ -67,7 +67,7 @@ def get_athletes_by_country(country):
 def get_super_fans(country):
     mycursor.execute(
         "select id, first_name, surname from User where not exists (select id from Athlete where country = {} except "
-        "select athlete_id from Selects where user_id = User.id".format(country))
+        "select athlete_id from Favourites where user_id = User.id".format(country))
     result = mycursor.fetchall()
     return result
 
@@ -99,7 +99,7 @@ def select_athletes_events():
 # Get all countries
 def select_countries():
     mycursor.execute(
-        "select name from Country")
+        "select * from Country")
     result = mycursor.fetchall()
     return result
 
@@ -112,19 +112,19 @@ def select_friends(user_id):
     return result
 
 
-# Delete selected athlete for selected user
+# Delete favourite athlete from a user
 def delete_athlete_from_user(user_id, athlete_id):
-    mycursor.execute("delete from Selects where user_id = {} and athlete_id = {}".format(
+    mycursor.execute("delete from Favourites where user_id = {} and athlete_id = {}".format(
         user_id, athlete_id))
     # check if result is deleted
     result = mycursor.fetchall()
     return result
 
 
-# Insert selected athlete for selected user
+# Insert favourite athlete for a user
 def insert_athlete_into_user(user_id, athlete_id):
     mycursor.execute(
-        "insert into Selects values ({}, {})".format(user_id, athlete_id))
+        "insert into Favourites values ({}, {})".format(user_id, athlete_id))
     # check if result is inserted
     result = mycursor.fetchall()
     return result
@@ -158,9 +158,10 @@ def insert_user(id, first_name, surname, fav_country, email, username, password,
         f"insert {'IGNORE ' if ignore else ' '}into User values ({id}, '{first_name}', '{surname}', '{fav_country}', '{email}', '{username}', '{password}')")
     return
 
+
 def delete_user(id):
     mycursor.execute(
-        f"delete from Selects where user_id={id}"
+        f"delete from Favourites where user_id={id}"
     )
     mycursor.execute(
         f"delete from Friends where user_id={id} or friend_id={id}"
@@ -169,7 +170,7 @@ def delete_user(id):
         f"delete from User where id={id}"
     )
     return
-    
+
 
 # Insert event
 def insert_event(event_name, sport, ignore=False):
@@ -200,9 +201,9 @@ def insert_athlete(id, first_name, surname, sex, age, height, weight, country, i
 
 
 # Insert selected athlete id for user id
-def insert_selects(user_id, athlete_id, ignore=False):
+def insert_favourites(user_id, athlete_id, ignore=False):
     mycursor.execute(
-        f"insert {'IGNORE ' if ignore else ' '} into Selects values ({user_id}, {athlete_id})")
+        f"insert {'IGNORE ' if ignore else ' '} into Favourites values ({user_id}, {athlete_id})")
     return
 
 
@@ -242,7 +243,7 @@ def event_stats_per_country(country):
     event_stats_country = "select event_name, count(*) as medals_achieved" \
                           "from Athlete inner join participates on Athlete.id = participates.athlete_id" \
                           "where country={} and medal_achieved is not null group by event_name".format(
-        country)
+                              country)
     mycursor.execute(event_stats_country)
     return
 
@@ -252,7 +253,7 @@ def stats_per_country(country):
     stats_country = "create function stats_country({} varchar(255)" \
                     "returns table(avg_age DOUBLE(4,3), avg_height DOUBLE(6, 3), avg_weight DOUBLE(6, 3))" \
                     "return table (select avg(age), avg(height), avg(weight) from Athlete where country = {})".format(
-        country, country)
+                        country, country)
 
     mycursor.execute(stats_country)
     return
@@ -260,10 +261,10 @@ def stats_per_country(country):
 
 # Get a relation that includes all tuples that somehow match the query parameter
 def search_DB(query):
-    search_db = "select * from participates inner join (Athlete inner join Country on Athlete.country=Country.name)" \
-               "on participates.athlete_id = id where" \
-               "first_name like '%{}%' or surname like '%{}%' or country like '%{}%' or event_name like '%{}%'".format(
-        query, query, query, query)
+    search_db = "select * from participates inner join (Athlete inner join Country on Athlete.country=Country.country_code)" \
+        "on participates.athlete_id = id where" \
+        "first_name like '%{}%' or surname like '%{}%' or country like '%{}%' or event_name like '%{}%'".format(
+            query, query, query, query)
     mycursor.execute(search_db)
     return
 
