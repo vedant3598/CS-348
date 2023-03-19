@@ -48,7 +48,7 @@ def insert_favourite_athlete():
     user_id = data['user_id']
     athlete_id = data['athlete_id']
     insert_selects(user_id, athlete_id)
-
+    return "Favourited!"
 
 # Get user's friends
 @app.route("/friends", methods=["GET"])
@@ -61,16 +61,6 @@ def get_user_friends():
 @app.route("/medal-stats", methods=["GET"])
 def get_medal_stats():
     return get_medals_for_athletes()
-
-
-# Get athletes stats for selected country
-@app.route("/country-stats", methods=["GET"])
-def get_country_athlete_stats():
-    country = request.args.get('country')
-    country_stats = stats_per_country(country)
-    athletes = get_athletes_by_country(country)
-    return country_stats, athletes
-
 
 # Get all the super-fans for a selected country
 @app.route("/country-super-fans", methods=["GET"])
@@ -93,9 +83,7 @@ def get_country_event_stats():
 def get_country_stats():
     country = request.args.get('country')
     country_stats = stats_per_country(country)
-    athletes = get_athletes_by_country(country)
-    super_fans = get_super_fans(country)
-    return country_stats, athletes, super_fans
+    return country_stats[0]
 
 
 # Get athlete who has won the most medals for each event

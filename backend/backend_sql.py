@@ -9,7 +9,7 @@ mydb = mysql.connector.connect(
 )
 
 mydb.autocommit = True
-mycursor = mydb.cursor(dictionary=True)
+mycursor = mydb.cursor(dictionary=True, buffered=True)
 
 # Get medal count for each country
 def get_medals_for_country():
@@ -63,7 +63,7 @@ def get_medals_for_athlete(athlete_id):
 # Get list of athletes for selected country
 def get_athletes_by_country(country):
     mycursor.execute(
-        "select * from Athlete where country = {}".format(country))
+        "select * from Athlete where country = \"{}\"".format(country))
     result = mycursor.fetchall()
     return result
 
@@ -71,8 +71,8 @@ def get_athletes_by_country(country):
 # Get list of users who have selected every athlete for selected country
 def get_super_fans(country):
     mycursor.execute(
-        "select id, first_name, surname from User where not exists (select id from Athlete where country = {} except "
-        "select athlete_id from Selects where user_id = User.id".format(country))
+        "select id, first_name, surname from User where not exists (select id from Athlete where country = \"{}\" except "
+        "(select athlete_id from Selects where user_id = User.id))".format(country))
     result = mycursor.fetchall()
     return result
 
@@ -104,7 +104,7 @@ def select_athletes_events():
 # Get all countries
 def select_countries():
     mycursor.execute(
-        "select name from Country")
+        "select name, country_code from Country")
     result = mycursor.fetchall()
     return result
 
@@ -244,23 +244,27 @@ def trigger_rollback_friend(friend_id):
 
 
 def event_stats_per_country(country):
-    event_stats_country = "select event_name, count(*) as medals_achieved" \
-                          "from Athlete inner join participates on Athlete.id = participates.athlete_id" \
-                          "where country={} and medal_achieved is not null group by event_name".format(
+    event_stats_country = "select event_name, count(*) as medals_achieved " \
+                          "from Athlete inner join participates on Athlete.id = participates.athlete_id " \
+                          "where country=\"{}\" and medal_achieved is not null group by event_name".format(
         country)
     mycursor.execute(event_stats_country)
-    return
+    result = mycursor.fetchall()
+
+    return result
 
 
 # Get average age, height, and weight statistics for specified country
 def stats_per_country(country):
-    stats_country = "create function stats_country({} varchar(255)" \
-                    "returns table(avg_age DOUBLE(4,3), avg_height DOUBLE(6, 3), avg_weight DOUBLE(6, 3))" \
-                    "return table (select avg(age), avg(height), avg(weight) from Athlete where country = {})".format(
-        country, country)
+    stats_country = "select Country.country_code, avg(age) as avg_age, avg(height) as avg_height, avg(weight) as avg_weight " \
+                    "from (Country join Athlete on Country.country_code = Athlete.country) " \
+                    "where country = \"{}\" " \
+                    "group by Country.country_code".format(country)
 
     mycursor.execute(stats_country)
-    return
+    result = mycursor.fetchall()
+
+    return result
 
 
 # Get a relation that includes all tuples that somehow match the query parameter
