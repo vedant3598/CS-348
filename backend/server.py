@@ -111,13 +111,13 @@ def delete_user_selected_athlete():
     user_id = data['user_id']
     athlete_id = data['athlete_id']
     delete_athlete_from_user(user_id, athlete_id)
+    return f"{user_id} remove {athlete_id}"
 
 
 # Insert new user
 @app.route("/insert-new-user", methods=["POST"])
 def insert_new_user():
     data = request.form
-    user_id = data['user_id']
     first_name = data['first_name']
     surname = data['surname']
     fav_country = data['fav_country']
@@ -125,19 +125,20 @@ def insert_new_user():
     username = data['username']
     password = data['password']
 
-    if not (user_id and first_name and surname and fav_country and email and username and password):
-        ignore = True
-    else:
-        ignore = False
-    insert_user(user_id, first_name, surname, fav_country,
-                email, username, password, ignore)
+    insert_user(first_name, surname, fav_country,
+                email, username, password)
+
+    return f"User {first_name} {surname} added"
 
 # Delete existing user
+
+
 @app.route("/delete-user", methods=["POST"])
 def delete_existing_user():
     data = request.form
     user_id = data['user_id']
     delete_user(user_id)
+    return f"{user_id} deleted"
 
 
 # Search the majority of the data using a single string
@@ -145,6 +146,7 @@ def delete_existing_user():
 def search():
     query_string = request.args.get('query')
     return search_DB(query_string)
+
 
 @app.route("/")
 def welcome():

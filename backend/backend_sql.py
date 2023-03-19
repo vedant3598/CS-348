@@ -12,6 +12,8 @@ mydb.autocommit = True
 mycursor = mydb.cursor(dictionary=True)
 
 # Get medal count for each country
+
+
 def get_medals_for_country():
     mycursor.execute("select country, COUNT(*) as medal_count from Athlete inner join Participates on Athlete.id = "
                      "Participates.athlete_id where medal_achieved is not null group by country order by medal_count "
@@ -121,9 +123,7 @@ def select_friends(user_id):
 def delete_athlete_from_user(user_id, athlete_id):
     mycursor.execute("delete from Selects where user_id = {} and athlete_id = {}".format(
         user_id, athlete_id))
-    # check if result is deleted
-    result = mycursor.fetchall()
-    return result
+    return
 
 
 # Insert selected athlete for selected user
@@ -146,22 +146,40 @@ def find_event_max_participation():
 
 # Get max medals and athlete name for each event in Olympic history
 def get_max_medals_athlete():
-    mycursor.execute("create view athlete_medal_count as select *, COUNT(*) as num_medals from Athlete, Participates "
-                     "where Athlete.id = Participates.athlete_id and Participates.medal_achieved is not null group by"
-                     " Athlete.id")
+    mycursor.execute("""
+    create view athlete_medals as
+	    select *
+	    from (
+		    select id, event_name, count(*) as num_medals
+		    from Athlete join Participates on 
+                Athlete.id = Participates.athlete_id 
+            where Participates.medal_achieved is not null
+		    group by id, event_name
+	) as S join Athlete using(id);""")
 
-    mycursor.execute("select event_name, athlete_name, max(num_medals) as medal_count from athlete_medal_count group "
-                     "by athlete_medals.event_name order by most_medals desc")
+    mycursor.execute("""
+            select id, first_name, surname, country, event_name, most_medals
+            from (
+                select event_name, id, max(num_medals) as most_medals
+                from athlete_medals
+                group by event_name, id
+                order by most_medals desc
+            ) as T join Athlete using(id);""")
 
     result = mycursor.fetchall()
+
+    mycursor.execute("drop view athlete_medals")
+
     return result
 
 
 # Insert user
-def insert_user(id, first_name, surname, fav_country, email, username, password, ignore=False):
+def insert_user(first_name, surname, fav_country, email, username, password, ignore=False):
     mycursor.execute(
-        f"insert {'IGNORE ' if ignore else ' '}into User values ({id}, '{first_name}', '{surname}', '{fav_country}', '{email}', '{username}', '{password}')")
+        f"insert {'IGNORE ' if ignore else ' '}into User (first_name, surname, fav_country, email, username, password) " +
+        f"values ('{first_name}', '{surname}', '{fav_country}', '{email}', '{username}', '{password}')")
     return
+
 
 def delete_user(id):
     mycursor.execute(
@@ -174,7 +192,7 @@ def delete_user(id):
         f"delete from User where id={id}"
     )
     return
-    
+
 
 # Insert event
 def insert_event(event_name, sport, ignore=False):
@@ -247,7 +265,7 @@ def event_stats_per_country(country):
     event_stats_country = "select event_name, count(*) as medals_achieved" \
                           "from Athlete inner join participates on Athlete.id = participates.athlete_id" \
                           "where country={} and medal_achieved is not null group by event_name".format(
-        country)
+                              country)
     mycursor.execute(event_stats_country)
     return
 
@@ -257,7 +275,7 @@ def stats_per_country(country):
     stats_country = "create function stats_country({} varchar(255)" \
                     "returns table(avg_age DOUBLE(4,3), avg_height DOUBLE(6, 3), avg_weight DOUBLE(6, 3))" \
                     "return table (select avg(age), avg(height), avg(weight) from Athlete where country = {})".format(
-        country, country)
+                        country, country)
 
     mycursor.execute(stats_country)
     return
@@ -265,12 +283,15 @@ def stats_per_country(country):
 
 # Get a relation that includes all tuples that somehow match the query parameter
 def search_DB(query):
-    search_db = "select * from participates inner join (Athlete inner join Country on Athlete.country=Country.country_code)" \
-               "on participates.athlete_id = id where" \
-               "first_name like '%{}%' or surname like '%{}%' or country like '%{}%' or event_name like '%{}%'".format(
-        query, query, query, query)
-    mycursor.execute(search_db)
-    return
+    athlete_search = "select id, first_name, surname from Athlete where first_name like '%{}%' or surname like '%{}%' limit 50".format(
+        query, query)
+    mycursor.execute(athlete_search)
+    athlete_result = mycursor.fetchall()
+    country_search = "select name, country_code from Country where name like '%{}%' limit 50".format(
+        query)
+    mycursor.execute(country_search)
+    country_result = mycursor.fetchall()
+    return {"athlete": athlete_result, "country": country_result}
 
 
 def get_result():
