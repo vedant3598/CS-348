@@ -9,7 +9,7 @@ mydb = mysql.connector.connect(
 )
 
 mydb.autocommit = True
-mycursor = mydb.cursor()
+mycursor = mydb.cursor(dictionary=True)
 
 # Get medal count for each country
 def get_medals_for_country():
@@ -51,6 +51,12 @@ def get_medals_for_athlete(athlete_id):
         "select * from athlete_bronze, athlete_silver, athlete_gold")
 
     athlete_medals_result = mycursor.fetchall()
+
+    mycursor.execute("drop view athlete_bronze")
+    mycursor.execute("drop view athlete_silver")
+    mycursor.execute("drop view athlete_gold")
+
+    print(athlete_medals_result)
     return athlete_medals_result
 
 

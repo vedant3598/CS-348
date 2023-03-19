@@ -29,7 +29,7 @@ def get_athlete_data():
     athlete_id = request.args.get('athlete_id')
     athlete_data = get_athlete(athlete_id)
     athlete_medal_count = get_medals_for_athlete(athlete_id)
-    return athlete_data, athlete_medal_count
+    return {**(athlete_data[0]), **(athlete_medal_count[0])}
 
 
 # Insert a friend for user; trigger will be activated if friend_id does not exist
@@ -150,4 +150,5 @@ def search():
 def welcome():
     return 'CS-348 Backend Server'
 
-app.run(host='localhost', port=5000)
+
+app.run(host='localhost', port=5000, debug=True)

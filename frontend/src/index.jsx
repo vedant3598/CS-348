@@ -1,13 +1,51 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
+import { createGlobalStyle } from 'styled-components';
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from 'react-router-dom';
+import {
+  Athlete, Country, Home, Login, User,
+} from './pages';
 import reportWebVitals from './reportWebVitals';
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    font-family: 'Roboto', sans-serif;
+    padding: 0;
+    margin: 0;
+  }
+`;
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Home />,
+  },
+  {
+    path: '/login',
+    element: <Login />,
+  },
+  {
+    path: '/user/:userid',
+    element: <User />,
+  },
+  {
+    path: '/country/:countrycode',
+    element: <Country />,
+  },
+  {
+    path: '/athlete/:athleteid',
+    element: <Athlete />,
+  },
+]);
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <GlobalStyle />
+    <RouterProvider router={router} />
   </React.StrictMode>,
 );
 
