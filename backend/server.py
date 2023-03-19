@@ -109,13 +109,6 @@ def delete_user_selected_athlete():
     delete_athlete_from_user(user_id, athlete_id)
 
 
-@app.route("/delete-user-selected-athlete", methods=["POST"])
-def delete_user_selected_athlete():
-    user_id = request.args.get('user_id')
-    athlete_id = request.args.get('athlete_id')
-    delete_athlete_from_user(user_id, athlete_id)
-
-
 # Insert new user
 @app.route("/insert-new-user", methods=["POST"])
 def insert_new_user():
@@ -131,9 +124,12 @@ def insert_new_user():
         ignore = True
     else:
         ignore = False
-    insert_user(user_id, first_name, surname, fav_country, email, username, password, ignore)
+    insert_user(user_id, first_name, surname, fav_country,
+                email, username, password, ignore)
 
 # Delete existing user
+
+
 @app.route("/delete-user", methods=["POST"])
 def delete_existing_user():
     user_id = request.args.get('user_id')
@@ -145,6 +141,11 @@ def delete_existing_user():
 def search():
     query_string = request.args.get('query')
     return search_DB(query_string)
+
+
+@app.route("/")
+def welcome():
+    return 'CS-348 Backend Server'
 
 
 app.run(host='localhost', port=5000)
