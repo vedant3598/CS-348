@@ -6,24 +6,23 @@ from backend_sql import insert_friends, insert_selects, insert_user
 
 
 def fill_sample_users():
-    users = [(200_000, 'Adil', 'K', 'Canada', 'a@gmail.com', 'adil', 'password'),
-             (200_001, 'Cameron', 'S', 'Canada',
-              'c@gmail.com', 'cam', 'password'),
-             (200_002, 'Jay', 'B', 'Canada', 'j@gmail.com', 'jay', 'password'),
-             (200_003, 'Vedant', 'S', 'Canada', 'v@gmail.com', 'ved', 'password'),
+    users = [('Adil', 'K', 'CAN', 'a@gmail.com', 'adil', 'password'),
+             ('Cameron', 'S', 'CAN', 'c@gmail.com', 'cam', 'password'),
+             ('Jay', 'B', 'CAN', 'j@gmail.com', 'jay', 'password'),
+             ('Vedant', 'S', 'CAN', 'v@gmail.com', 'ved', 'password'),
              ]
 
-    selects = [(200_000, 1), (200_000, 2), (200_001, 3), (200_001, 4), (200_002, 5), (200_002, 6), (200_002, 7),
-               (200_003, 1), (200_003, 2), (200_003, 3), (200_003, 4), (200_003, 5), (200_003, 6), (200_003, 7)]
+    selects = [(1, 1), (1, 2), (2, 3), (2, 4), (3, 5), (3, 6), (3, 7),
+               (4, 1), (4, 2), (4, 3), (4, 4), (4, 5), (4, 6), (4, 7)]
 
-    friends = [(200_000, 200_001), (200_000, 200_002), (200_000, 200_003),
-               (200_001, 200_000), (200_001, 200_002), (200_001, 200_003),
-               (200_002, 200_000), (200_002, 200_001), (200_002, 200_003),
-               (200_003, 200_000), (200_003, 200_001), (200_003, 200_002)]
+    friends = [(1, 2), (1, 3), (1, 4),
+               (2, 1), (2, 3), (2, 4),
+               (3, 1), (3, 2), (3, 4),
+               (4, 1), (4, 2), (4, 3)]
 
-    for uid, first_name, last_name, fav_country, email, username, password in users:
-        print(uid, first_name, last_name, fav_country, email, username, password)
-        insert_user(uid, first_name, last_name, fav_country,
+    for first_name, last_name, fav_country, email, username, password in users:
+        print(first_name, last_name, fav_country, email, username, password)
+        insert_user(first_name, last_name, fav_country,
                     email, username, password, ignore=True)
 
     for uid, aid in selects:
