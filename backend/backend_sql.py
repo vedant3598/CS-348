@@ -148,23 +148,23 @@ def find_event_max_participation():
 def get_max_medals_athlete():
     mycursor.execute("""
     create view athlete_medals as
-	    select *
-	    from (
-		    select id, event_name, count(*) as num_medals
-		    from Athlete join Participates on 
+        select *
+        from (
+            select id, sum(case when (medal_achieved is null) then 0 else 1 end) as num_medals
+            from Athlete join Participates on 
                 Athlete.id = Participates.athlete_id 
-            where Participates.medal_achieved is not null
-		    group by id, event_name
-	) as S join Athlete using(id);""")
+            group by id
+        ) as S join Athlete using(id);
+    """)
 
     mycursor.execute("""
-            select id, first_name, surname, country, event_name, most_medals
-            from (
-                select event_name, id, max(num_medals) as most_medals
-                from athlete_medals
-                group by event_name, id
-                order by most_medals desc
-            ) as T join Athlete using(id);""")
+        select id, first_name, surname, country, num_medals, rank() over (order by (num_medals) desc) as medal_rank
+        from (
+        select id, num_medals
+        from athlete_medals
+        group by id
+        ) as T join Athlete using(id);
+    """)
 
     result = mycursor.fetchall()
 
@@ -265,7 +265,7 @@ def event_stats_per_country(country):
     event_stats_country = "select event_name, count(*) as medals_achieved " \
                           "from Athlete inner join participates on Athlete.id = participates.athlete_id " \
                           "where country=\"{}\" and medal_achieved is not null group by event_name".format(
-                        country)
+                              country)
     mycursor.execute(event_stats_country)
     result = mycursor.fetchall()
 
