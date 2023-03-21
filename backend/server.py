@@ -1,11 +1,21 @@
 from flask import Flask, request
 from backend_sql import *
+from flask_cors import CORS
+import json
 
 # Set up flask app
 app = Flask(__name__)
+CORS(app)
 
+
+def to_json(func):
+    def wrapper(*args, **kwargs):
+        return json.dumps(func(*args, **kwargs))
+    return wrapper
 
 # Get all the countries and their total medal counts
+
+
 @app.route("/country-medals", methods=["GET"])
 def get_all_medals():
     return get_medals_for_country()
@@ -13,6 +23,7 @@ def get_all_medals():
 
 # Get all the athletes by country
 @app.route("/country-athletes", methods=["GET"])
+@to_json
 def get_athlete_medals():
     return get_athletes_by_country(request.args.get('country'))
 
