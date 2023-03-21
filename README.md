@@ -4,11 +4,12 @@ An olympics database driven application.
 
 Team members: Adil Kapadia, Cameron Shum, Jay Bhagat, Vedant Shah
 
-## Pre-requistes
+## Pre-requisites
 
 The following need to be installed prior to using this application:
 1. MySQL
 2. Python3
+3. yarn
 
 ## Installation
 
@@ -24,6 +25,8 @@ source backend/.venv/bin/activate
 pip install -r backend/requirements.txt
 ```
 
+If the pip install fails, follow the instructions [here](https://stackoverflow.com/questions/35190465/virtualenvpython3-4-pip-install-mysqlclient-error) to fix it.
+
 ## Set-up
 
 To set up the database, make sure MySQL is installed. Then run:
@@ -38,6 +41,15 @@ To run the server, complete the commands above and then run:
 ```
 cd backend
 python3 server.py
+```
+
+## Starting the Frontend
+
+In a different terminal run:
+```
+cd frontend
+yarn
+yarn start
 ```
 
 ## Features

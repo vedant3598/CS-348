@@ -1,8 +1,8 @@
 id	first_name	surname	sex	age	height	weight	country	count_gold	count_silver	count_bronze
 1	A	Dijiang	M	24	180	80	CHN	0	0	0
 2	A	Lamusi	M	23	170	60	CHN	0	0	0
-3	Gunnar Nielsen	Aaby	M	24			DEN	0	0	0
-4	Edgar Lindenau	Aabye	M	34			DEN	1	0	0
+3	Gunnar Nielsen	Aaby	M	24	NULL	NULL	DEN	0	0	0
+4	Edgar Lindenau	Aabye	M	34	NULL	NULL	DEN	1	0	0
 5	Christine Jacoba	Aaftink	F	21	185	82	NED	0	0	0
 6	Per Knut	Aaland	M	31	188	75	USA	0	0	0
 7	John	Aalberg	M	31	183	72	USA	0	0	0
