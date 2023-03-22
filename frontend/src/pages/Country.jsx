@@ -7,7 +7,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
-import { Avatar, CardHeader } from '@mui/material';
+import { Avatar, CardHeader, Chip } from '@mui/material';
 import codeToFlag from '../helpers/codeToFlag';
 
 const responsive = {
@@ -27,7 +27,9 @@ const AthleteSkeleton = ({ id }) => (
 );
 
 const Athlete = ({
-  first_name: firstName, surname, age, height, weight, id, sex,
+  first_name: firstName, surname, age,
+  height, weight, id, sex, count_gold: countGold,
+  count_silver: countSilver, count_bronze: countBronze,
 }) => (
   <Card
     key={id}
@@ -42,6 +44,22 @@ const Athlete = ({
           {sex === 'M' ? '👨' : '👩'}
         </Avatar>
       )}
+      title={(
+        <div>
+          🥇
+          {' '}
+          {countGold}
+          {'       '}
+          🥈
+          {' '}
+          {countSilver}
+          {'       '}
+          🥉
+          {' '}
+          {countBronze}
+        </div>
+      )}
+      sx={{ whiteSpace: 'pre-wrap' }}
     />
     <CardContent>
       <Typography>
@@ -65,14 +83,39 @@ const Athlete = ({
         Weight:
         {' '}
         {weight}
+        {' '}
+        kg
+      </Typography>
+    </CardContent>
+  </Card>
+);
+
+const SuperFans = ({
+  first_name: firstName, surname, id,
+}) => (
+  <Card
+    key={id}
+    sx={{
+      backgroundColor: '#fdded6', margin: 5, cursor: 'pointer', height: 200,
+    }}
+    onClick={() => { window.location.href = `/athlete/${id}`; }}
+  >
+    <CardContent>
+      <Typography>
+        {firstName}
+        {' '}
+        {surname}
       </Typography>
     </CardContent>
   </Card>
 );
 
 const Country = () => {
-  const [athletes, setAthletes] = useState([]);
   const [countryName, setCountryName] = useState('');
+  const [athletes, setAthletes] = useState([]);
+  const [superFans, setSuperFans] = useState([]);
+  const [countryStats, setCountryStats] = useState({});
+  const [loaded, setLoaded] = useState(false);
   const { countryCode } = useParams();
 
   useEffect(() => {
@@ -80,41 +123,100 @@ const Country = () => {
       const countryNameRes = await axios.get('http://localhost:5000/country', { params: { country: countryCode }, headers: { 'Content-Type': 'application/json' } });
       setCountryName(countryNameRes.data.name);
 
-      const athletesRes = await axios.get('http://localhost:5000/country-athletes', { params: { country: countryCode }, headers: { 'Content-Type': 'application/json' } });
-      setAthletes(athletesRes.data);
+      const athletesRes = await axios.get('http://localhost:5000/medal-stats', { params: { country: countryCode }, headers: { 'Content-Type': 'application/json' } });
+      const athleteArr = athletesRes.data.sort((a, b) => {
+        if (a.count_gold * 3 + a.count_silver * 2 + a.count_bronze
+          > b.count_gold * 3 + b.count_silver * 2 + b.count_bronze) {
+          return -1;
+        }
+        return 1;
+      });
+      setAthletes(athleteArr);
+
+      const superFansRes = await axios.get('http://localhost:5000/country-super-fans', { params: { country: countryCode }, headers: { 'Content-Type': 'application/json' } });
+      setSuperFans(superFansRes.data);
+
+      const countryStatsRes = await axios.get('http://localhost:5000/country-stats', { params: { country: countryCode }, headers: { 'Content-Type': 'application/json' } });
+      setCountryStats(countryStatsRes.data);
+
+      setLoaded(true);
     };
 
     asyncFunc();
   }, []);
 
   return (
-    <Container>
+    <>
       <TopBar />
-      <Avatar sx={{
-        backgroundColor: '#b6cdbf',
-        width: 72,
-        height: 72,
-        fontSize: 56,
-        margin: 5,
-      }}
-      >
-        {codeToFlag(countryCode)}
-      </Avatar>
-      <Typography variant="h3">{countryName}</Typography>
-      {
-        athletes.length !== 0
-          ? (
-            <Carousel responsive={responsive}>
-              {athletes.map(Athlete)}
-            </Carousel>
-          )
-          : (
-            <Carousel responsive={responsive}>
-              {[0, 1, 2, 3, 4].map(AthleteSkeleton)}
-            </Carousel>
-          )
-      }
-    </Container>
+      <Container>
+        <TitleContainer>
+          <Avatar sx={{
+            backgroundColor: '#b6cdbf',
+            width: 72,
+            height: 72,
+            fontSize: 56,
+            marginRight: 5,
+          }}
+          >
+            {codeToFlag(countryCode)}
+          </Avatar>
+          <Typography variant="h3" sx={{ paddingRight: 5 }}>{countryName}</Typography>
+          <Chip label={`${countryStats.avg_age} years old`} sx={{ marginRight: 5 }} />
+          <Chip label={`${countryStats.avg_height} cm`} sx={{ marginRight: 5 }} />
+          <Chip label={`${countryStats.avg_weight} kg`} sx={{ marginRight: 5 }} />
+        </TitleContainer>
+        <Typography variant="h4">
+          {countryName}
+          &apos;s Stats
+        </Typography>
+        <div>
+          {/* <Bar /> */}
+        </div>
+        <Typography variant="h4">
+          {countryName}
+          &apos;s Athletes
+        </Typography>
+        {
+          loaded
+            ? (
+              <Carousel responsive={responsive}>
+                {athletes.slice(0, 100).map(Athlete)}
+              </Carousel>
+            )
+            : (
+              <Carousel responsive={responsive}>
+                {[0, 1, 2, 3, 4].map(AthleteSkeleton)}
+              </Carousel>
+            )
+        }
+        <Typography variant="h4">
+          {countryName}
+          &apos;s Super Fans
+        </Typography>
+        {
+          // eslint-disable-next-line no-nested-ternary
+          loaded
+            ? (
+              superFans.length === 0
+                ? (
+                  <Typography variant="h5" align="center" sx={{ marginTop: 5, marginBottom: 5 }}>
+                    None
+                  </Typography>
+                )
+                : (
+                  <Carousel responsive={responsive}>
+                    {superFans.map(SuperFans)}
+                  </Carousel>
+                )
+            )
+            : (
+              <Carousel responsive={responsive}>
+                {[0, 1, 2, 3, 4].map(AthleteSkeleton)}
+              </Carousel>
+            )
+        }
+      </Container>
+    </>
   );
 };
 
@@ -124,6 +226,9 @@ const Container = styled.div`
   width: 100%;
   min-height: 100vh;
   height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+
   background-color: #fef2e8;
 `;
 
@@ -138,6 +243,12 @@ const SkeletonKeyFrames = keyframes`
 
 const SkeletonCard = styled(Card)`
   animation: ${SkeletonKeyFrames} 1.5s linear infinite alternate;
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 50px;
 `;
 
 const TopBar = styled.div`

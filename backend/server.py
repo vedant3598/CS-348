@@ -81,8 +81,9 @@ def get_user_friends():
 
 # Get medal stats for all athletes
 @app.route("/medal-stats", methods=["GET"])
+@to_json
 def get_medal_stats():
-    return get_medals_for_athletes()
+    return get_medals_for_athletes(request.args.get('country'))
 
 # Get all the super-fans for a selected country
 

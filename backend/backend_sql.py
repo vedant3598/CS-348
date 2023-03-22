@@ -22,13 +22,31 @@ def get_medals_for_country():
     return result
 
 
-def get_medals_for_athletes():
-    mycursor.execute("select *, (select count(*) from Athlete, Participates where Athlete.id = "
-                     "Participates.athlete_id and medal_achieved = 'gold' and Athlete.id = A.id) as count_gold, "
-                     "(select count(*) from Athlete, Participates where Athlete.id = "
-                     "Participates.athlete_id and medal_achieved = 'silver' and Athlete.id = A.id) as count_silver, "
-                     "(select count(*) from Athlete, Participates where Athlete.id = Participates.athlete_id and "
-                     "medal_achieved = 'bronze' and Athlete.id = A.id) as count_bronze from Athlete as A")
+def get_medals_for_athletes(country_filter=None):
+    query = """
+    select *,
+        (select count(*)
+        from Athlete, Participates
+        where Athlete.id = Participates.athlete_id
+            and medal_achieved = 'Gold'
+            And Athlete.id = A.id) as count_gold,
+        (select count(*)
+        from Athlete, Participates
+        where Athlete.id = Participates.athlete_id
+            and medal_achieved = 'Silver'
+            And Athlete.id = A.id) as count_silver,
+        (select count(*)
+        from Athlete, Participates
+        where Athlete.id = Participates.athlete_id
+                and medal_achieved = 'Bronze'
+                And Athlete.id = A.id) as count_bronze
+    from Athlete as A
+    """
+
+    if (country_filter is not None):
+        query += f" where A.country = '{country_filter}'"
+
+    mycursor.execute(query)
 
     athletes_medals_result = mycursor.fetchall()
     return athletes_medals_result
