@@ -330,10 +330,6 @@ const SkeletonCard = styled(Card)`
   animation: ${SkeletonKeyFrames} 1.5s linear infinite alternate;
 `;
 
-// const StyledStarOutlineIcon = styled(StarOutlineIcon)`
-//   color:
-// `;
-
 const TitleContainer = styled.div`
   display: flex;
   align-items: center;
