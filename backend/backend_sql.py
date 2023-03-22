@@ -60,8 +60,18 @@ def get_medals_for_athlete(athlete_id):
     print(athlete_medals_result)
     return athlete_medals_result
 
+# Get list of athletes for selected country
+
+
+def get_country(country):
+    mycursor.execute(
+        "select * from Country where country_code = \"{}\"".format(country))
+    result = mycursor.fetchall()
+    return result
 
 # Get list of athletes for selected country
+
+
 def get_athletes_by_country(country):
     mycursor.execute(
         "select * from Athlete where country = \"{}\"".format(country))

@@ -11,6 +11,7 @@ CORS(app)
 def to_json(func):
     def wrapper(*args, **kwargs):
         return json.dumps(func(*args, **kwargs))
+    wrapper.__name__ = func.__name__
     return wrapper
 
 # Get all the countries and their total medal counts
@@ -21,7 +22,15 @@ def get_all_medals():
     return get_medals_for_country()
 
 
+# Get country information
+@app.route("/country", methods=["GET"])
+@to_json
+def get_country_route():
+    return get_country(request.args.get('country'))[0]
+
 # Get all the athletes by country
+
+
 @app.route("/country-athletes", methods=["GET"])
 @to_json
 def get_athlete_medals():

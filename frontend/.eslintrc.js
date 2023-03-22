@@ -19,5 +19,6 @@ module.exports = {
   rules: {
     'react/function-component-definition': [2, { namedComponents: 'arrow-function' }],
     'react/prop-types': [0],
+    'no-unused-vars': [1],
   },
 };
