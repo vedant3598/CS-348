@@ -8,7 +8,30 @@ import Typography from '@mui/material/Typography';
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import { Avatar, CardHeader, Chip } from '@mui/material';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import { Bar } from 'react-chartjs-2';
+import StarOutlineIcon from '@mui/icons-material/StarOutline';
+import StarIcon from '@mui/icons-material/Star';
 import codeToFlag from '../helpers/codeToFlag';
+
+const ATHLETE_COUNT = 100;
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+);
 
 const responsive = {
   carousel: {
@@ -98,10 +121,10 @@ const SuperFans = ({
     sx={{
       backgroundColor: '#fdded6', margin: 5, cursor: 'pointer', height: 200,
     }}
-    onClick={() => { window.location.href = `/athlete/${id}`; }}
+    onClick={() => { window.location.href = `/user/${id}`; }}
   >
     <CardContent>
-      <Typography>
+      <Typography variant="h3">
         {firstName}
         {' '}
         {surname}
@@ -116,6 +139,7 @@ const Country = () => {
   const [superFans, setSuperFans] = useState([]);
   const [countryStats, setCountryStats] = useState({});
   const [loaded, setLoaded] = useState(false);
+  const [isUserFavourite, setIsUserFavourite] = useState(false);
   const { countryCode } = useParams();
 
   useEffect(() => {
@@ -145,6 +169,51 @@ const Country = () => {
     asyncFunc();
   }, []);
 
+  const handleFavouriteCountryClick = () => {
+    setIsUserFavourite((prevIsUserFavourite) => !prevIsUserFavourite);
+  };
+
+  const options = {
+    plugins: {
+      title: {
+        display: true,
+        text: `${countryName}'s Stats`,
+      },
+    },
+    responsive: true,
+    scales: {
+      x: {
+        stacked: true,
+      },
+      y: {
+        stacked: true,
+      },
+    },
+  };
+
+  const labels = athletes.slice(0, ATHLETE_COUNT).map((athlete) => (`${athlete.first_name} ${athlete.surname}`));
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: 'Gold Medals',
+        data: athletes.slice(0, ATHLETE_COUNT).map((athlete) => athlete.count_gold),
+        backgroundColor: '#FFD700',
+      },
+      {
+        label: 'Silver Medals',
+        data: athletes.slice(0, ATHLETE_COUNT).map((athlete) => athlete.count_silver),
+        backgroundColor: '#C0C0C0',
+      },
+      {
+        label: 'Bronze Medals',
+        data: athletes.slice(0, ATHLETE_COUNT).map((athlete) => athlete.count_bronze),
+        backgroundColor: '#CD7F32',
+      },
+    ],
+  };
+
   return (
     <>
       <TopBar />
@@ -164,13 +233,29 @@ const Country = () => {
           <Chip label={`${countryStats.avg_age} years old`} sx={{ marginRight: 5 }} />
           <Chip label={`${countryStats.avg_height} cm`} sx={{ marginRight: 5 }} />
           <Chip label={`${countryStats.avg_weight} kg`} sx={{ marginRight: 5 }} />
+          {isUserFavourite ? (
+            <StarIcon
+              onClick={handleFavouriteCountryClick}
+              sx={{
+                cursor: 'pointer', color: '#e2a020', width: 24, height: 24,
+              }}
+            />
+          )
+            : (
+              <StarOutlineIcon
+                onClick={handleFavouriteCountryClick}
+                sx={{
+                  cursor: 'pointer', color: '#e2a020', width: 24, height: 24,
+                }}
+              />
+            )}
         </TitleContainer>
         <Typography variant="h4">
           {countryName}
           &apos;s Stats
         </Typography>
         <div>
-          {/* <Bar /> */}
+          <Bar options={options} data={data} />
         </div>
         <Typography variant="h4">
           {countryName}
@@ -180,7 +265,7 @@ const Country = () => {
           loaded
             ? (
               <Carousel responsive={responsive}>
-                {athletes.slice(0, 100).map(Athlete)}
+                {athletes.slice(0, ATHLETE_COUNT).map(Athlete)}
               </Carousel>
             )
             : (
@@ -244,6 +329,10 @@ const SkeletonKeyFrames = keyframes`
 const SkeletonCard = styled(Card)`
   animation: ${SkeletonKeyFrames} 1.5s linear infinite alternate;
 `;
+
+// const StyledStarOutlineIcon = styled(StarOutlineIcon)`
+//   color:
+// `;
 
 const TitleContainer = styled.div`
   display: flex;
