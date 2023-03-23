@@ -127,9 +127,24 @@ def delete_user_selected_athlete():
     delete_athlete_from_user(user_id, athlete_id)
     return f"{user_id} remove {athlete_id}"
 
+@app.route("/login", methods=["POST"])
+@to_json
+def login():
+    data = request.form
+    username = data['username']
+    password = data['password']
+    user = login_db(username, password)
+    return user
+
+@app.route("/country-codes", methods=["GET"])
+@to_json
+def get_all_country_codes():
+    res = get_country_codes();
+    return res
 
 # Insert new user
-@app.route("/insert-new-user", methods=["POST"])
+@app.route("/create-user", methods=["POST"])
+@to_json
 def insert_new_user():
     data = request.form
     first_name = data['first_name']

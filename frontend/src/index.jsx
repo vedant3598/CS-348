@@ -1,14 +1,9 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { createGlobalStyle } from 'styled-components';
-import {
-  createBrowserRouter,
-  RouterProvider,
-} from 'react-router-dom';
-import {
-  Athlete, Country, Home, Login, User,
-} from './pages';
-import reportWebVitals from './reportWebVitals';
+import React, { useState } from "react";
+import ReactDOM from "react-dom/client";
+import { createGlobalStyle } from "styled-components";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { Athlete, Country, Home, Login, User } from "./pages";
+import reportWebVitals from "./reportWebVitals";
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -18,35 +13,41 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Home />,
-  },
-  {
-    path: '/login',
-    element: <Login />,
-  },
-  {
-    path: '/user/:userId',
-    element: <User />,
-  },
-  {
-    path: '/country/:countryCode',
-    element: <Country />,
-  },
-  {
-    path: '/athlete/:athleteId',
-    element: <Athlete />,
-  },
-]);
+const RootComponent = () => {
+  const [userInfo, setUserInfo] = useState({});
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Home userInfo={userInfo} />
+    },
+    {
+      path: "/login",
+      element: <Login setUserInfo={setUserInfo} />
+    },
+    {
+      path: "/user/:userId",
+      element: <User userInfo={userInfo} />
+    },
+    {
+      path: "/country/:countryCode",
+      element: <Country userInfo={userInfo} />
+    },
+    {
+      path: "/athlete/:athleteId",
+      element: <Athlete userInfo={userInfo} />
+    }
+  ]);
+
+  return <RouterProvider router={router} />;
+};
+
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
     <GlobalStyle />
-    <RouterProvider router={router} />
-  </>,
+    <RootComponent />
+  </>
 );
 
 // If you want to start measuring performance in your app, pass a function

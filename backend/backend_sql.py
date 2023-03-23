@@ -350,6 +350,25 @@ def search_DB(query):
     country_result = mycursor.fetchall()
     return {"athlete": athlete_result, "country": country_result}
 
+def login_db(username, password):
+    query = f"""
+    select * 
+    from User
+    where username = '{username}' and password = '{password}'
+    """
+    mycursor.execute(query)
+    res = mycursor.fetchone()
+    return res
+
+def get_country_codes():
+    query = f"""
+    select country_code
+    from Country
+    """
+    mycursor.execute(query)
+    res = mycursor.fetchall()
+    return res
+
 
 def get_events_for_athlete(athlete):
     events_query = "select event_name, year, season, medal_achieved \

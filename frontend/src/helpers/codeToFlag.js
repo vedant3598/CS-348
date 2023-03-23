@@ -210,7 +210,7 @@ const codes = {
 
 const codeToFlag = (code) => {
   if (code in codes === false) {
-    return code.substring(0, 2);
+    return '🗺️';
   }
   return countryCodeEmoji(codes[code]);
 };
