@@ -29,7 +29,7 @@ order by medal_count desc;
 
 
 
-/* Query 3: returns information about the country’s performance at the olympics and the athletes that have participated for this country */
+/* Query 3: returns a countries super fans */
 
 select id, first_name, surname
 from User
@@ -40,7 +40,7 @@ where not exists (
 );
 
 
-/* Query 4: returns the athlete that wins the most medals for each event */
+/* Query 4: returns the athlete that wins the most medals, ranked*/
 
 create view athlete_medals as
     select *
