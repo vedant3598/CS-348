@@ -57,7 +57,6 @@ def get_medals_for_athlete(athlete_id):
     mycursor.execute("drop view athlete_silver")
     mycursor.execute("drop view athlete_gold")
 
-    print(athlete_medals_result)
     return athlete_medals_result
 
 
@@ -164,6 +163,33 @@ def get_max_medals_athlete():
         group by id
         ) as T join Athlete using(id);
     """)
+
+    result = mycursor.fetchall()
+
+    mycursor.execute("drop view athlete_medals")
+
+    return result
+
+def get_athlete_rank(athlete):
+    mycursor.execute("""
+    create view athlete_medals as
+        select *
+        from (
+            select id, sum(case when (medal_achieved is null) then 0 else 1 end) as num_medals
+            from Athlete join Participates on 
+                Athlete.id = Participates.athlete_id 
+            group by id
+        ) as S join Athlete using(id);
+    """)
+
+    mycursor.execute("""
+        select medal_rank from (select id, first_name, surname, country, num_medals, rank() over (order by (num_medals) desc) as medal_rank
+        from (
+        select id, num_medals
+        from athlete_medals
+        group by id
+        ) as T join Athlete using(id)) as R where id = {};
+    """.format(athlete))
 
     result = mycursor.fetchall()
 
@@ -297,6 +323,10 @@ def search_DB(query):
     return {"athlete": athlete_result, "country": country_result}
 
 
-def get_result():
-    result = mycursor.fetchall()
-    return result
+def get_events_for_athlete(athlete):
+    events_query = "select event_name, year, season, medal_achieved \
+        from Participates join Event using(event_name) where Participates.athlete_id = {}".format(athlete)
+    mycursor.execute(events_query)
+    events_result = mycursor.fetchall()
+
+    return events_result
