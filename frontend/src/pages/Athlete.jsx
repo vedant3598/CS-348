@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { useParams } from 'react-router-dom';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import axios from 'axios';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
@@ -13,18 +13,9 @@ import StarIcon from '@mui/icons-material/Star';
 import codeToFlag from '../helpers/codeToFlag';
 
 const NoRowsOverlay = () => (
-  <Box
-    sx={{
-      backgroundColor: '#fef2e8',
-      alignItems: 'center',
-      justifyContent: 'center',
-      display: 'inline-flex',
-      height: '100%',
-      width: '100%',
-    }}
-  >
+  <SkeletonOverlay>
     <Typography sx={{ justifyContent: 'center' }}>No rows</Typography>
-  </Box>
+  </SkeletonOverlay>
 );
 
 const Athlete = () => {
@@ -173,3 +164,22 @@ const TopBar = styled.div`
 
 // eslint-disable-next-line react/prop-types
 const StyledChip = ({ label }) => (<Chip style={{ marginInline: 5, marginTop: 20 }} variant="outlined" label={label} />);
+
+const SkeletonKeyFrames = keyframes`
+  0% {
+    background-color: whitesmoke;
+  }
+  100% {
+    background-color: lightgrey;
+  }
+`;
+
+const SkeletonOverlay = styled(Box)`
+    background-color: #fef2e8;
+    align-items: center;
+    justify-content: center;
+    display: inline-flex;
+    height: 100%;
+    width: 100%;
+    animation: ${SkeletonKeyFrames} 1.5s linear infinite alternate;
+`;
