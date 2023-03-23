@@ -10,6 +10,23 @@ import { Avatar, Chip } from '@mui/material';
 import StarOutlineIcon from '@mui/icons-material/StarOutline';
 import StarIcon from '@mui/icons-material/Star';
 
+import codeToFlag from '../helpers/codeToFlag';
+
+const NoRowsOverlay = () => (
+  <Box
+    sx={{
+      backgroundColor: '#fef2e8',
+      alignItems: 'center',
+      justifyContent: 'center',
+      display: 'inline-flex',
+      height: '100%',
+      width: '100%',
+    }}
+  >
+    <Typography sx={{ justifyContent: 'center' }}>No rows</Typography>
+  </Box>
+);
+
 const Athlete = () => {
   const columns = [
     { field: 'event_name', headerName: 'Event', width: 500 },
@@ -107,6 +124,7 @@ const Athlete = () => {
             <div style={{ flexDirection: 'row', justifyContent: 'center', marginLeft: 25 }}>
               <StyledChip label={`🏆 #${athleteStats.medal_rank}`} />
               <StyledChip label={`😎 ${athleteStats.age} years old`} />
+              <StyledChip label={codeToFlag(athleteStats.country)} />
               <StyledChip label={athleteStats.sex === 'M' ? '👨' : '👩'} />
               <StyledChip label={`⚖️ ${athleteStats.weight} kg`} />
               <StyledChip label={`📏 ${athleteStats.height} cm`} />
@@ -126,6 +144,9 @@ const Athlete = () => {
                   rows={events}
                   columns={columns}
                   disableRowSelectionOnClick
+                  slots={{
+                    noRowsOverlay: NoRowsOverlay,
+                  }}
                 />
               </Box>
             </div>
