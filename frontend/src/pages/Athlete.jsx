@@ -14,7 +14,7 @@ import codeToFlag from '../helpers/codeToFlag';
 
 const NoRowsOverlay = () => (
   <SkeletonOverlay>
-    <Typography sx={{ justifyContent: 'center' }}>No rows</Typography>
+    <Typography sx={{ justifyContent: 'center' }}>Loading data...</Typography>
   </SkeletonOverlay>
 );
 
