@@ -49,7 +49,8 @@ def get_athlete_data():
     athlete_id = request.args.get('athlete_id')
     athlete_data = get_athlete(athlete_id)
     athlete_medal_count = get_medals_for_athlete(athlete_id)
-    return {**(athlete_data[0]), **(athlete_medal_count[0])}
+    athlete_rank = get_athlete_rank(athlete_id)
+    return {**(athlete_data[0]), **(athlete_medal_count[0]), **(athlete_rank[0])}
 
 
 # Insert a friend for user; trigger will be activated if friend_id does not exist
@@ -143,9 +144,8 @@ def insert_new_user():
 
     return f"User {first_name} {surname} added"
 
+
 # Delete existing user
-
-
 @app.route("/delete-user", methods=["POST"])
 def delete_existing_user():
     data = request.form
@@ -160,6 +160,12 @@ def search():
     query_string = request.args.get('query')
     return search_DB(query_string)
 
+
+# Getting the events for the given athlete
+@app.route("/events-for-athlete", methods=["GET"])
+def event_for_athlete():
+    athlete_id = request.args.get('athlete_id')
+    return get_events_for_athlete(athlete_id)
 
 @app.route("/")
 def welcome():
