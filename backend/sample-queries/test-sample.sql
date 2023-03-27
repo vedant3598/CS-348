@@ -60,3 +60,11 @@ from (
 ) as T join Athlete using(id);
 
 drop view athlete_medals;
+
+/* Query 6: country avg statistics */
+select Country.country_code, 
+        avg(age) as avg_age, 
+        avg(height) as avg_height, 
+        avg(weight) as avg_weight 
+from (Country join Athlete on Country.country_code = Athlete.country) 
+where country = 'DEN'

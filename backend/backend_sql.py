@@ -327,10 +327,14 @@ def event_stats_per_country(country):
 
 # Get average age, height, and weight statistics for specified country
 def stats_per_country(country):
-    stats_country = "select Country.country_code, avg(age) as avg_age, avg(height) as avg_height, avg(weight) as avg_weight " \
-                    "from (Country join Athlete on Country.country_code = Athlete.country) " \
-                    "where country = \"{}\" " \
-                    "group by Country.country_code".format(country)
+    stats_country = f"""
+    select Country.country_code, 
+        avg(age) as avg_age, 
+        avg(height) as avg_height, 
+        avg(weight) as avg_weight 
+    from (Country join Athlete on Country.country_code = Athlete.country) 
+    where country = '{country}'
+    """
 
     mycursor.execute(stats_country)
     result = mycursor.fetchall()

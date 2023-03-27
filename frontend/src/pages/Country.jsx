@@ -119,6 +119,7 @@ const Country = () => {
   const [superFans, setSuperFans] = useState([]);
   const [countryStats, setCountryStats] = useState({});
   const [loaded, setLoaded] = useState(false);
+  const [countryMedals, setCountryMedals] = useState(false);
   const [isUserFavourite, setIsUserFavourite] = useState(false);
   const { countryCode } = useParams();
 
@@ -162,6 +163,19 @@ const Country = () => {
         }
       );
       setCountryStats(countryStatsRes.data);
+
+      const countryMedalsRes = await axios.get(
+        "http://localhost:5000/country-medals",
+        {
+          params: { country: countryCode },
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+      setCountryMedals(
+        countryMedalsRes.data.filter(
+          ({ country }) => country === countryCode
+        )[0].medal_count
+      );
 
       setLoaded(true);
     };
@@ -242,17 +256,18 @@ const Country = () => {
             {countryName}
           </Typography>
           <Chip
-            label={`${countryStats.avg_age} years old`}
+            label={`😎 ${countryStats.avg_age} years old`}
             sx={{ marginRight: 5 }}
           />
           <Chip
-            label={`${countryStats.avg_height} cm`}
+            label={`📏 ${countryStats.avg_height} cm`}
             sx={{ marginRight: 5 }}
           />
           <Chip
-            label={`${countryStats.avg_weight} kg`}
+            label={`⚖️ ${countryStats.avg_weight} kg`}
             sx={{ marginRight: 5 }}
           />
+          <Chip label={`🏅 ${countryMedals} medals`} sx={{ marginRight: 5 }} />
           {isUserFavourite ? (
             <StarIcon
               onClick={handleFavouriteCountryClick}

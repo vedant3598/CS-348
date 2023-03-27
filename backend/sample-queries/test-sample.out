@@ -22,3 +22,5 @@ id	first_name	surname	country	num_medals	medal_rank
 5	Christine Jacoba	Aaftink	NED	0	2
 6	Per Knut	Aaland	USA	0	2
 7	John	Aalberg	USA	0	2
+country_code	avg_age	avg_height	avg_weight
+DEN	29.0000	NULL	NULL

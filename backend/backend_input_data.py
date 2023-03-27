@@ -5,7 +5,7 @@ import mysql.connector
 from backend_sql import insert_friends, insert_favourites, insert_user
 
 
-def fill_sample_users():
+def fill_sample_users(is_production = False):
     users = [('Adil', 'K', 'USA', 'a@gmail.com', 'adil', 'password'),
              ('Cameron', 'S', 'USA', 'c@gmail.com', 'cam', 'password'),
              ('Jay', 'B', 'USA', 'j@gmail.com', 'jay', 'password'),
@@ -32,6 +32,21 @@ def fill_sample_users():
     for uid, fid in friends:
         print(uid, fid)
         insert_friends(uid, fid)
+
+    if (is_production):
+        mydb = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="",
+            port='3306',
+            database="olympics"
+        )
+
+        mydb.autocommit = True
+        mycursor = mydb.cursor()
+        mycursor.execute("insert IGNORE into Favourites (select '3', id from Athlete where country = 'USA')")
+        mycursor.execute("insert IGNORE into Favourites (select '4', id from Athlete where country = 'USA')")
+
 
 
 def escape_name(s):
