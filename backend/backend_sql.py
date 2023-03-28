@@ -226,6 +226,38 @@ def get_athlete_rank(athlete):
     return result
 
 
+# Get favourite athletes for a certain user
+def get_favourite_athletes(user_id):
+    mycursor.execute("""
+        create view gold_count as 
+        select athlete_id as id, count(*) as gold_medals from (Favourites join User on Favourites.user_id = User.id as S) 
+            join Participates on Participates.athlete_id = S.athlete_id
+        where id = \"{}\" and Participates.medal_achieved = "gold" group by athlete_id
+    """.format(user_id))
+    mycursor.execute("""
+        create view silver_count as 
+        select athlete_id as id, count(*) as silver_medals from (Favourites join User on Favourites.user_id = User.id as S) 
+            join Participates on Participates.athlete_id = S.athlete_id
+        where id = \"{}\" and Participates.medal_achieved = "silver" group by athlete_id
+    """.format(user_id))
+    mycursor.execute("""
+        create view bronze_count as 
+        select athlete_id as id, count(*) as silver_medals from (Favourites join User on Favourites.user_id = User.id as S) 
+            join Participates on Participates.athlete_id = S.athlete_id
+        where id = \"{}\" and Participates.medal_achieved = "bronze" group by athlete_id
+    """.format(user_id))
+
+    mycursor.execute("""
+        select * from (((Athlete join gold_count) join silver_count) join bronze_count)
+    """)
+
+    result = mycursor.fetchall()
+
+    mycursor.execute("drop view gold_count")
+    mycursor.execute("drop view silver_count")
+    mycursor.execute("drop view bronze_count")
+    return result
+
 # Insert user
 def insert_user(first_name, surname, fav_country, email, username, password, ignore=False):
     mycursor.execute(

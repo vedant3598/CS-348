@@ -182,6 +182,11 @@ def event_for_athlete():
     athlete_id = request.args.get('athlete_id')
     return get_events_for_athlete(athlete_id)
 
+@app.route("/favourite-athletes", methods=["GET"])
+def favourite_athletes():
+    user_id = request.args.get('user_id')
+    return get_favourite_athletes(user_id)
+
 @app.route("/")
 def welcome():
     return 'CS-348 Backend Server'
