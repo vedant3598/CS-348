@@ -46,7 +46,17 @@ const TopBar = () => {
   return (
     <Container>
       <Spacer>
-        <Typography variant="h4">🏅</Typography>
+        <Typography variant="h4">
+          {/*  eslint-disable-next-line */}
+          <div
+            onClick={() => {
+              window.location.href = "/";
+            }}
+            style={{ width: 50, cursor: "pointer" }}
+          >
+            🏅
+          </div>
+        </Typography>
       </Spacer>
       <SearchContainer>
         <OutsideClickHandler onOutsideClick={clearSearch}>
