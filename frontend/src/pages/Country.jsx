@@ -21,6 +21,7 @@ import { Bar } from "react-chartjs-2";
 import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import StarIcon from "@mui/icons-material/Star";
 import codeToFlag from "../helpers/codeToFlag";
+import TopBar from "../helpers/TopBar";
 
 const ATHLETE_COUNT = 100;
 
@@ -358,9 +359,4 @@ const TitleContainer = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 50px;
-`;
-
-const TopBar = styled.div`
-  height: 50px;
-  background-color: grey;
 `;

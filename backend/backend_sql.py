@@ -379,11 +379,11 @@ def stats_per_country(country):
 
 # Get a relation that includes all tuples that somehow match the query parameter
 def search_DB(query):
-    athlete_search = "select id, first_name, surname from Athlete where first_name like '%{}%' or surname like '%{}%' limit 50".format(
+    athlete_search = "select id, first_name, surname, sex from Athlete where first_name like '%{}%' or surname like '%{}%' limit 10".format(
         query, query)
     mycursor.execute(athlete_search)
     athlete_result = mycursor.fetchall()
-    country_search = "select name, country_code from Country where name like '%{}%' limit 50".format(
+    country_search = "select name, country_code from Country where name like '%{}%' limit 10".format(
         query)
     mycursor.execute(country_search)
     country_result = mycursor.fetchall()
