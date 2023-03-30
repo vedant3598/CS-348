@@ -95,7 +95,7 @@ def get_athletes_by_country(country):
 # Get list of users who have selected every athlete for selected country
 def get_super_fans(country):
     mycursor.execute(
-        "select id, first_name, surname from User where not exists (select id from Athlete where country = \"{}\" except "
+        "select * from User where not exists (select id from Athlete where country = \"{}\" except "
         "(select athlete_id from Favourites where user_id = User.id))".format(country))
     result = mycursor.fetchall()
     return result
@@ -379,11 +379,11 @@ def stats_per_country(country):
 
 # Get a relation that includes all tuples that somehow match the query parameter
 def search_DB(query):
-    athlete_search = "select id, first_name, surname from Athlete where first_name like '%{}%' or surname like '%{}%' limit 50".format(
+    athlete_search = "select id, first_name, surname, sex from Athlete where first_name like '%{}%' or surname like '%{}%' limit 10".format(
         query, query)
     mycursor.execute(athlete_search)
     athlete_result = mycursor.fetchall()
-    country_search = "select name, country_code from Country where name like '%{}%' limit 50".format(
+    country_search = "select name, country_code from Country where name like '%{}%' limit 10".format(
         query)
     mycursor.execute(country_search)
     country_result = mycursor.fetchall()
