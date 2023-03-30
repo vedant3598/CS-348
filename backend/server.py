@@ -111,11 +111,14 @@ def get_country_stats():
     country_stats = stats_per_country(country)
     return country_stats[0]
 
+@app.route("/all-country-medals", methods=["GET"])
+def get_all_country_medals():
+    return all_country_medals()
 
 # Get athlete who has won the most medals for each event
-@app.route("/max-medals-athlete", methods=["GET"])
-def get_max_medal_athlete_event():
-    return get_max_medals_athlete()
+@app.route("/all-athlete-ranking", methods=["GET"])
+def get_all_ranking_athlete():
+    return get_all_athlete_ranks()
 
 
 # Deselect athlete from user

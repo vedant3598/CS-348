@@ -14,7 +14,7 @@ import {
 import SendIcon from "@mui/icons-material/Send";
 import axios from "axios";
 
-const LoginFields = ({ setOpen, setUserInfo }) => {
+const LoginFields = ({ setOpen }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -25,7 +25,8 @@ const LoginFields = ({ setOpen, setUserInfo }) => {
 
     axios.post("http://localhost:5000/login", form).then((res) => {
       if (res.data !== null) {
-        setUserInfo(res.data);
+        localStorage.removeItem("CS348-olympics-scoreboard-login");
+        localStorage.setItem("CS348-olympics-scoreboard-login", JSON.stringify(res.data));
         window.location.href = "/";
       } else {
         setOpen(true);
@@ -198,7 +199,7 @@ const SignUpFields = () => {
   );
 };
 
-const Login = ({ setUserInfo }) => {
+const Login = () => {
   // eslint-disable-next-line
   const [searchParams, setSearchParams] = useSearchParams();
   const [buttonState, setButtonState] = useState("login");
@@ -245,7 +246,7 @@ const Login = ({ setUserInfo }) => {
           </ToggleButton>
         </ToggleButtonGroup>
         {buttonState === "login" ? (
-          <LoginFields setUserInfo={setUserInfo} setOpen={setOpen} />
+          <LoginFields setOpen={setOpen} />
         ) : (
           <SignUpFields />
         )}

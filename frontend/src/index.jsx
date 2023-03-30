@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactDOM from "react-dom/client";
 import { createGlobalStyle } from "styled-components";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { Athlete, Country, Home, Login, User } from "./pages";
+import { Athlete, Country, Home, Login } from "./pages";
 import reportWebVitals from "./reportWebVitals";
 
 const GlobalStyle = createGlobalStyle`
@@ -14,28 +14,22 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const RootComponent = () => {
-  const [userInfo, setUserInfo] = useState({});
-
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Home userInfo={userInfo} />
+      element: <Home />
     },
     {
       path: "/login",
-      element: <Login setUserInfo={setUserInfo} />
-    },
-    {
-      path: "/user/:userId",
-      element: <User userInfo={userInfo} />
+      element: <Login />
     },
     {
       path: "/country/:countryCode",
-      element: <Country userInfo={userInfo} />
+      element: <Country />
     },
     {
       path: "/athlete/:athleteId",
-      element: <Athlete userInfo={userInfo} />
+      element: <Athlete />
     }
   ]);
 
