@@ -7,7 +7,7 @@ import {
   Skeleton,
   ToggleButton,
   ToggleButtonGroup,
-  Typography,
+  Typography
 } from "@mui/material";
 import { BarChart, TableChart, ViewCarousel } from "@mui/icons-material";
 import styled, { keyframes } from "styled-components";
@@ -18,7 +18,7 @@ import {
   BarElement,
   Title,
   Tooltip,
-  Legend,
+  Legend
 } from "chart.js";
 import React, { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
@@ -27,6 +27,7 @@ import Carousel from "react-multi-carousel";
 import axios from "axios";
 import { DataGrid } from "@mui/x-data-grid";
 import codeToFlag from "../helpers/codeToFlag";
+import TopBar from "../helpers/TopBar";
 
 const FRIEND_COUNT = 100;
 const ATHLETE_COUNT = 100;
@@ -44,8 +45,8 @@ ChartJS.register(
 const responsive = {
   carousel: {
     breakpoint: { max: 4000, min: 0 },
-    items: 5,
-  },
+    items: 5
+  }
 };
 
 const NoRowsOverlay = () => (
@@ -79,15 +80,14 @@ const Friend = ({
   fav_country: favCountry,
   email,
   username,
-  id,
+  id
 }) => (
   <Card
     key={id}
     sx={{
       backgroundColor: "#fdded6",
       margin: 5,
-      cursor: "pointer",
-      height: 150,
+      height: 150
     }}
   >
     <CardHeader
@@ -110,7 +110,7 @@ const Country = ({
   count_gold: countGold,
   count_silver: countSilver,
   count_bronze: countBronze,
-  name,
+  name
 }) => (
   <Card
     key={countryCode}
@@ -118,7 +118,7 @@ const Country = ({
       backgroundColor: "#fdded6",
       margin: 5,
       cursor: "pointer",
-      height: 150,
+      height: 150
     }}
     onClick={() => {
       window.location.href = `/country/${countryCode}`;
@@ -156,7 +156,7 @@ const Athlete = ({
   count_gold: countGold,
   count_silver: countSilver,
   count_bronze: countBronze,
-  medal_rank,
+  medal_rank
 }) => (
   <Card
     key={id}
@@ -164,7 +164,7 @@ const Athlete = ({
       backgroundColor: "#fdded6",
       margin: 5,
       cursor: "pointer",
-      height: !medal_rank ? 200 : 225,
+      height: !medal_rank ? 200 : 225
     }}
     onClick={() => {
       window.location.href = `/athlete/${id}`;
@@ -207,7 +207,7 @@ const DisplayAthletes = ({
   displayStyle,
   loaded,
   athletes,
-  ranking = false,
+  ranking = false
 }) => {
   if (displayStyle === "carousel") {
     return loaded ? (
@@ -228,12 +228,12 @@ const DisplayAthletes = ({
       responsive: true,
       scales: {
         x: {
-          stacked: true,
+          stacked: true
         },
         y: {
-          stacked: true,
-        },
-      },
+          stacked: true
+        }
+      }
     };
 
     const labels = athletes
@@ -248,23 +248,23 @@ const DisplayAthletes = ({
           data: athletes
             .slice(0, ATHLETE_COUNT)
             .map((athlete) => athlete.count_bronze),
-          backgroundColor: "#CD7F32",
+          backgroundColor: "#CD7F32"
         },
         {
           label: "Silver Medals",
           data: athletes
             .slice(0, ATHLETE_COUNT)
             .map((athlete) => athlete.count_silver),
-          backgroundColor: "#C0C0C0",
+          backgroundColor: "#C0C0C0"
         },
         {
           label: "Gold Medals",
           data: athletes
             .slice(0, ATHLETE_COUNT)
             .map((athlete) => athlete.count_gold),
-          backgroundColor: "#FFD700",
-        },
-      ],
+          backgroundColor: "#FFD700"
+        }
+      ]
     };
 
     return (
@@ -279,26 +279,26 @@ const DisplayAthletes = ({
       field: "name",
       headerName: "Name",
       width: 350,
-      valueGetter: (params) => `${params.row.first_name} ${params.row.surname}`,
+      valueGetter: (params) => `${params.row.first_name} ${params.row.surname}`
     },
     { field: "sex", headerName: "Sex", width: 140, sortable: false },
     {
       field: "age",
       headerName: "Age",
       width: 140,
-      valueGetter: (params) => params.row.age ?? "N/A",
+      valueGetter: (params) => params.row.age ?? "N/A"
     },
     {
       field: "height",
       headerName: "Height",
       width: 140,
-      valueGetter: (params) => params.row.height ?? "N/A",
+      valueGetter: (params) => params.row.height ?? "N/A"
     },
     {
       field: "weight",
       headerName: "Weight",
       width: 140,
-      valueGetter: (params) => params.row.weight ?? "N/A",
+      valueGetter: (params) => params.row.weight ?? "N/A"
     },
     { field: "count_gold", headerName: "Gold", width: 140 },
     { field: "count_silver", headerName: "Silver", width: 140 },
@@ -310,8 +310,8 @@ const DisplayAthletes = ({
       valueGetter: (params) =>
         params.row.count_gold +
         params.row.count_silver +
-        params.row.count_bronze,
-    },
+        params.row.count_bronze
+    }
   ];
 
   return (
@@ -323,13 +323,13 @@ const DisplayAthletes = ({
           ranking
             ? [
                 ...columns,
-                { field: "medal_rank", headerName: "Rank", width: 140 },
+                { field: "medal_rank", headerName: "Rank", width: 140 }
               ]
             : columns
         }
         disableRowSelectionOnClick
         slots={{
-          noRowsOverlay: NoRowsOverlay,
+          noRowsOverlay: NoRowsOverlay
         }}
       />
     </div>
@@ -356,12 +356,12 @@ const DisplayCountries = ({ displayStyle, loaded, countries }) => {
       responsive: true,
       scales: {
         x: {
-          stacked: true,
+          stacked: true
         },
         y: {
-          stacked: true,
-        },
-      },
+          stacked: true
+        }
+      }
     };
 
     const labels = countries
@@ -376,23 +376,23 @@ const DisplayCountries = ({ displayStyle, loaded, countries }) => {
           data: countries
             .slice(0, COUNTRY_COUNT)
             .map((country) => country.count_bronze),
-          backgroundColor: "#CD7F32",
+          backgroundColor: "#CD7F32"
         },
         {
           label: "Silver Medals",
           data: countries
             .slice(0, COUNTRY_COUNT)
             .map((country) => country.count_silver),
-          backgroundColor: "#C0C0C0",
+          backgroundColor: "#C0C0C0"
         },
         {
           label: "Gold Medals",
           data: countries
             .slice(0, COUNTRY_COUNT)
             .map((country) => country.count_gold),
-          backgroundColor: "#FFD700",
-        },
-      ],
+          backgroundColor: "#FFD700"
+        }
+      ]
     };
 
     return (
@@ -406,7 +406,7 @@ const DisplayCountries = ({ displayStyle, loaded, countries }) => {
     {
       field: "name",
       headerName: "Name",
-      width: 500,
+      width: 500
     },
     { field: "count_gold", headerName: "Gold", width: 250 },
     { field: "count_silver", headerName: "Silver", width: 250 },
@@ -418,8 +418,8 @@ const DisplayCountries = ({ displayStyle, loaded, countries }) => {
       valueGetter: (params) =>
         parseInt(params.row.count_gold, 10) +
         parseInt(params.row.count_silver, 10) +
-        parseInt(params.row.count_bronze, 10),
-    },
+        parseInt(params.row.count_bronze, 10)
+    }
   ];
 
   return (
@@ -430,7 +430,7 @@ const DisplayCountries = ({ displayStyle, loaded, countries }) => {
         columns={columns}
         disableRowSelectionOnClick
         slots={{
-          noRowsOverlay: NoRowsOverlay,
+          noRowsOverlay: NoRowsOverlay
         }}
       />
     </div>
@@ -461,7 +461,7 @@ const Home = () => {
     const asyncFunc = async () => {
       const friendsRes = await axios.get("http://localhost:5000/friends", {
         params: { user_id: info.id },
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" }
       });
       setFriends(friendsRes.data);
 
@@ -469,14 +469,14 @@ const Home = () => {
         "http://localhost:5000/favourite-athletes",
         {
           params: { user_id: info.id },
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json" }
         }
       );
       setAthletes(favouriteRes.data);
 
       const countryNameRes = await axios.get("http://localhost:5000/country", {
         params: { country: info.fav_country },
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json" }
       });
       setCountryName(countryNameRes.data.name);
 
@@ -484,7 +484,7 @@ const Home = () => {
         "http://localhost:5000/country-stats",
         {
           params: { country: info.fav_country },
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json" }
         }
       );
       setCountryStats(countryStatsRes.data);
@@ -493,7 +493,7 @@ const Home = () => {
         "http://localhost:5000/country-medals",
         {
           params: { country: info.fav_country },
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json" }
         }
       );
       setCountryMedals(
@@ -505,7 +505,7 @@ const Home = () => {
       const allCountriesRes = await axios.get(
         "http://localhost:5000/all-country-medals",
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json" }
         }
       );
       setAllCountries(allCountriesRes.data);
@@ -513,7 +513,7 @@ const Home = () => {
       const allAthletesRes = await axios.get(
         "http://localhost:5000/all-athlete-ranking",
         {
-          headers: { "Content-Type": "application/json" },
+          headers: { "Content-Type": "application/json" }
         }
       );
       setAllAthletes(allAthletesRes.data);
@@ -547,7 +547,7 @@ const Home = () => {
               margin: 5,
               cursor: "pointer",
               height: 200,
-              width: 300,
+              width: 300
             }}
             onClick={() => {
               window.location.href = `/country/${userInfo.fav_country}`;
@@ -681,11 +681,6 @@ const Home = () => {
 };
 
 export default Home;
-
-const TopBar = styled.div`
-  height: 50px;
-  background-color: grey;
-`;
 
 const Container = styled.div`
   width: 100%;

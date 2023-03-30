@@ -95,7 +95,7 @@ def get_athletes_by_country(country):
 # Get list of users who have selected every athlete for selected country
 def get_super_fans(country):
     mycursor.execute(
-        "select id, first_name, surname from User where not exists (select id from Athlete where country = \"{}\" except "
+        "select * from User where not exists (select id from Athlete where country = \"{}\" except "
         "(select athlete_id from Favourites where user_id = User.id))".format(country))
     result = mycursor.fetchall()
     return result

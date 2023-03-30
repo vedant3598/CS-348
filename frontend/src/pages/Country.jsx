@@ -93,20 +93,33 @@ const Athlete = ({
   </Card>
 );
 
-const SuperFans = ({ first_name: firstName, surname, id }) => (
+const SuperFans = ({
+  first_name: firstName,
+  surname,
+  id,
+  fav_country: favCountry,
+  username,
+  email
+}) => (
   <Card
     key={id}
     sx={{
       backgroundColor: "#fdded6",
       margin: 5,
-      cursor: "pointer",
-      height: 200
+      height: 150
     }}
   >
+    <CardHeader
+      title={
+        <Typography>
+          {firstName} {surname} {codeToFlag(favCountry)}
+        </Typography>
+      }
+      sx={{ whiteSpace: "pre-wrap" }}
+    />
     <CardContent>
-      <Typography variant="h3">
-        {firstName} {surname}
-      </Typography>
+      <Typography variant="body2">{username}</Typography>
+      <Typography variant="body2">{email}</Typography>
     </CardContent>
   </Card>
 );
