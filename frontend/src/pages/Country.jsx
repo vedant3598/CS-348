@@ -101,9 +101,6 @@ const SuperFans = ({ first_name: firstName, surname, id }) => (
       cursor: "pointer",
       height: 200
     }}
-    onClick={() => {
-      window.location.href = `/user/${id}`;
-    }}
   >
     <CardContent>
       <Typography variant="h3">

@@ -78,8 +78,6 @@ def get_medals_for_athlete(athlete_id):
     return athlete_medals_result
 
 # Get list of athletes for selected country
-
-
 def get_country(country):
     mycursor.execute(
         "select * from Country where country_code = \"{}\"".format(country))
@@ -87,8 +85,6 @@ def get_country(country):
     return result
 
 # Get list of athletes for selected country
-
-
 def get_athletes_by_country(country):
     mycursor.execute(
         "select * from Athlete where country = \"{}\"".format(country))
@@ -139,8 +135,9 @@ def select_countries():
 
 # Get user's friends
 def select_friends(user_id):
-    mycursor.execute(
-        "select friend_id from Friends where user_id = {}".format(user_id))
+    mycursor.execute("""
+        select id, first_name, surname, fav_country, email, username from ((select friend_id from Friends where user_id = {}) as S join User on S.friend_id = id)
+    """.format(user_id))
     result = mycursor.fetchall()
     return result
 
@@ -171,25 +168,37 @@ def find_event_max_participation():
 
 
 # Get max medals and athlete name for each event in Olympic history
-def get_max_medals_athlete():
+def get_all_athlete_ranks():
     mycursor.execute("""
     create view athlete_medals as
-        select *
+        select *, rank() over (order by (num_medals) desc) as medal_rank
         from (
             select id, sum(case when (medal_achieved is null) then 0 else 1 end) as num_medals
             from Athlete join Participates on 
                 Athlete.id = Participates.athlete_id 
             group by id
-        ) as S join Athlete using(id);
+        ) as S join Athlete using(id)
+    group by id
     """)
 
     mycursor.execute("""
-        select id, first_name, surname, country, num_medals, rank() over (order by (num_medals) desc) as medal_rank
-        from (
-        select id, num_medals
-        from athlete_medals
-        group by id
-        ) as T join Athlete using(id);
+    select *, 
+        (select count(*) 
+        from Athlete, Participates 
+        where Athlete.id = Participates.athlete_id 
+            and medal_achieved = 'Gold' and Athlete.id = A.id) as count_gold, 
+        (select count(*) 
+        from Athlete, Participates 
+        where Athlete.id = Participates.athlete_id 
+            and medal_achieved = 'Silver' and Athlete.id = A.id) as count_silver, 
+        (select count(*) 
+        from Athlete, Participates where Athlete.id = Participates.athlete_id 
+            and medal_achieved = 'Bronze' and Athlete.id = A.id) as count_bronze 
+    from 
+        (select Athlete.first_name, Athlete.surname, Athlete.id, Athlete.sex, Athlete.age, 
+            Athlete.height, Athlete.weight, Athlete.country, athlete_medals.medal_rank 
+        from Athlete, athlete_medals 
+        where Athlete.id = athlete_medals.id) as A
     """)
 
     result = mycursor.fetchall()
@@ -225,6 +234,32 @@ def get_athlete_rank(athlete):
 
     return result
 
+
+# Get favourite athletes for a certain user
+def get_favourite_athletes(user_id):
+    mycursor.execute("""
+        select *,
+            (select count(*)
+            from Athlete, Participates
+            where Athlete.id = Participates.athlete_id
+                and medal_achieved = 'Gold'
+                And Athlete.id = A.id) as count_gold,
+            (select count(*)
+            from Athlete, Participates
+            where Athlete.id = Participates.athlete_id
+                and medal_achieved = 'Silver'
+                And Athlete.id = A.id) as count_silver,
+            (select count(*)
+            from Athlete, Participates
+            where Athlete.id = Participates.athlete_id
+                    and medal_achieved = 'Bronze'
+                    And Athlete.id = A.id) as count_bronze
+        from Athlete as A join Favourites on A.id = Favourites.athlete_id
+        where Favourites.user_id = {}
+    """.format(user_id))
+
+    result = mycursor.fetchall()
+    return result
 
 # Insert user
 def insert_user(first_name, surname, fav_country, email, username, password, ignore=False):
@@ -381,3 +416,29 @@ def get_events_for_athlete(athlete):
     events_result = mycursor.fetchall()
 
     return events_result
+
+def all_country_medals():
+    mycursor.execute("""
+    select * from (
+        select country_code,
+            sum((select count(*)
+            from Athlete, Participates
+            where Athlete.id = Participates.athlete_id
+                and medal_achieved = 'Gold'
+                And Athlete.id = A.id)) as count_gold,
+            sum((select count(*)
+            from Athlete, Participates
+            where Athlete.id = Participates.athlete_id
+                and medal_achieved = 'Silver'
+                And Athlete.id = A.id)) as count_silver,
+            sum((select count(*)
+            from Athlete, Participates
+            where Athlete.id = Participates.athlete_id
+                    and medal_achieved = 'Bronze'
+                    And Athlete.id = A.id)) as count_bronze
+        from (select * from Athlete, Country where Athlete.country = Country.country_code) as A
+        group by country_code
+    ) as S join Country using(country_code)
+    order by count_gold desc
+    """)
+    return mycursor.fetchall()
