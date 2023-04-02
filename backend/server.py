@@ -15,8 +15,6 @@ def to_json(func):
     return wrapper
 
 # Get all the countries and their total medal counts
-
-
 @app.route("/country-medals", methods=["GET"])
 def get_all_medals():
     return get_medals_for_country()
@@ -29,8 +27,6 @@ def get_country_route():
     return get_country(request.args.get('country'))[0]
 
 # Get all the athletes by country
-
-
 @app.route("/country-athletes", methods=["GET"])
 @to_json
 def get_athlete_medals():
@@ -72,8 +68,6 @@ def insert_favourite_athlete():
     return "Favourited!"
 
 # Get user's friends
-
-
 @app.route("/friends", methods=["GET"])
 def get_user_friends():
     user_id = request.args.get('user_id')
@@ -87,8 +81,6 @@ def get_medal_stats():
     return get_medals_for_athletes(request.args.get('country'))
 
 # Get all the super-fans for a selected country
-
-
 @app.route("/country-super-fans", methods=["GET"])
 def get_country_super_fans():
     country = request.args.get('country')
@@ -130,6 +122,7 @@ def delete_user_selected_athlete():
     delete_athlete_from_user(user_id, athlete_id)
     return f"{user_id} remove {athlete_id}"
 
+# Login
 @app.route("/login", methods=["POST"])
 @to_json
 def login():
@@ -139,10 +132,11 @@ def login():
     user = login_db(username, password)
     return user
 
+# Get the country codes
 @app.route("/country-codes", methods=["GET"])
 @to_json
 def get_all_country_codes():
-    res = get_country_codes();
+    res = get_country_codes()
     return res
 
 # Insert new user
@@ -185,6 +179,7 @@ def event_for_athlete():
     athlete_id = request.args.get('athlete_id')
     return get_events_for_athlete(athlete_id)
 
+# Getting the favourite athletes for the given user_id
 @app.route("/favourite-athletes", methods=["GET"])
 def favourite_athletes():
     user_id = request.args.get('user_id')

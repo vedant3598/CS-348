@@ -18,7 +18,6 @@ import {
   Legend
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import StarOutlineIcon from "@mui/icons-material/StarOutline";
 import StarIcon from "@mui/icons-material/Star";
 import codeToFlag from "../helpers/codeToFlag";
 import TopBar from "../helpers/TopBar";
@@ -135,6 +134,9 @@ const Country = () => {
   const { countryCode } = useParams();
 
   useEffect(() => {
+    const info = JSON.parse(
+      localStorage.getItem("CS348-olympics-scoreboard-login")
+    );
     const asyncFunc = async () => {
       const countryNameRes = await axios.get("http://localhost:5000/country", {
         params: { country: countryCode },
@@ -188,15 +190,12 @@ const Country = () => {
         )[0].medal_count
       );
 
+      setIsUserFavourite(info.fav_country === countryCode);
       setLoaded(true);
     };
 
     asyncFunc();
   }, []);
-
-  const handleFavouriteCountryClick = () => {
-    setIsUserFavourite((prevIsUserFavourite) => !prevIsUserFavourite);
-  };
 
   const options = {
     plugins: {
@@ -281,7 +280,6 @@ const Country = () => {
           <Chip label={`🏅 ${countryMedals} medals`} sx={{ marginRight: 5 }} />
           {isUserFavourite ? (
             <StarIcon
-              onClick={handleFavouriteCountryClick}
               sx={{
                 cursor: "pointer",
                 color: "#e2a020",
@@ -290,15 +288,7 @@ const Country = () => {
               }}
             />
           ) : (
-            <StarOutlineIcon
-              onClick={handleFavouriteCountryClick}
-              sx={{
-                cursor: "pointer",
-                color: "#e2a020",
-                width: 24,
-                height: 24
-              }}
-            />
+            <div />
           )}
         </TitleContainer>
         <Typography variant="h4">
