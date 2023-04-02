@@ -54,14 +54,27 @@ const Athlete = () => {
     medal_rank: 0
   });
   const [events, setEvents] = useState([]);
+  const [userInfo, setUserInfo] = useState({});
   const [loaded, setLoaded] = useState(false);
   const [isUserFavourite, setIsUserFavourite] = useState(false);
 
   const handleFavouriteCountryClick = () => {
-    setIsUserFavourite((prevIsUserFavourite) => !prevIsUserFavourite);
+    const form = new FormData();
+    form.append("user_id", userInfo.id);
+    form.append("athlete_id", athleteId);
+
+    axios.post(`http://localhost:5000/${isUserFavourite ? 'delete-user-selected-athlete' : 'favourite-athlete'}`, form).then((res) => {
+      if (res.data !== null) {
+        setIsUserFavourite(!isUserFavourite);
+      }
+    });
   };
 
   useEffect(() => {
+    const info = JSON.parse(
+      localStorage.getItem("CS348-olympics-scoreboard-login")
+    );
+    setUserInfo(info);
     const asyncFunc = async () => {
       const athleteRes = await axios.get("http://localhost:5000/athlete", {
         params: { athlete_id: athleteId },
@@ -77,6 +90,15 @@ const Athlete = () => {
         }
       );
       setEvents(eventsRes.data);
+
+      const favouriteRes = await axios.get(
+        "http://localhost:5000/favourite-athletes",
+        {
+          params: { user_id: info.id },
+          headers: { "Content-Type": "application/json" }
+        }
+      );
+      setIsUserFavourite(!!favouriteRes.data.filter((val) => val.id === athleteId));
       setLoaded(true);
     };
 

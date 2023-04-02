@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import Typography from "@mui/material/Typography";
+import LogoutIcon from "@mui/icons-material/Logout";
 import axios from "axios";
-import { Avatar, MenuItem, MenuList } from "@mui/material";
+import { Avatar, IconButton, MenuItem, MenuList } from "@mui/material";
 import { DebounceInput } from "react-debounce-input";
 import OutsideClickHandler from "react-outside-click-handler";
 import codeToFlag from "./codeToFlag";
@@ -15,7 +16,7 @@ const TopBar = () => {
   const searchDb = async (searchTerm) => {
     const res = await axios.get("http://localhost:5000/search", {
       params: { query: searchTerm },
-      headers: { "Content-Type": "application/json" }
+      headers: { "Content-Type": "application/json" },
     });
 
     setAthleteResults(res.data.athlete);
@@ -72,7 +73,7 @@ const TopBar = () => {
               sx={{
                 position: "absolute",
                 backgroundColor: "#fdded6",
-                marginTop: 1
+                marginTop: 1,
               }}
             >
               {athleteResults.map(({ first_name, surname, sex, id }) => (
@@ -85,7 +86,7 @@ const TopBar = () => {
                   <Avatar
                     sx={{
                       backgroundColor: "#b6cdbf",
-                      marginRight: 1
+                      marginRight: 1,
                     }}
                   >
                     {sex === "M" ? "👨" : "👩"}
@@ -105,7 +106,7 @@ const TopBar = () => {
                   <Avatar
                     sx={{
                       backgroundColor: "#b6cdbf",
-                      marginRight: 1
+                      marginRight: 1,
                     }}
                   >
                     {codeToFlag(country_code)}
@@ -117,6 +118,16 @@ const TopBar = () => {
           )}
         </OutsideClickHandler>
       </SearchContainer>
+      <IconButton
+        color="primary"
+        component="label"
+        onClick={() => {
+          localStorage.removeItem("CS348-olympics-scoreboard-login");
+          window.location.href = "/";
+        }}
+      >
+        <LogoutIcon />
+      </IconButton>
     </Container>
   );
 };
